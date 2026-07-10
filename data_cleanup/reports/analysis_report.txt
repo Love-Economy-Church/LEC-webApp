@@ -1,0 +1,102 @@
+--- Duplicate Roles (Potential Conflicts) ---
+2x "KB2 Cell 02 Shepherd"
+    Holders: Angel Osei, Emmanuel Boakye
+2x "FBB Cell 04 Shepherd"
+    Holders: Pending Identity, Pending Identity
+2x "Kharis Buscenta Head"
+    Holders: Isaac Nuamah, Veronica Oppong
+2x "KB2 Cell Shepherd 02"
+    Holders: Jesse Asanab, Jesse Asanab
+2x "KB2 Cell Shepherd 01"
+    Holders: Samuel William Dodoo, Samuel William Dodoo
+2x "KB2 Cell Shepherd 03"
+    Holders: Edwin Aveh, Edwin Aveh
+2x "KB2 Cell Shepherd 05"
+    Holders: Jeremiah Cofie, Jeremiah Cofie
+4x "KB Cell 04 Shepherd"
+    Holders: Pending Identity, Pending Identity, Pending Identity, Pending Identity
+2x "NCB Cell 02 Shepherd"
+    Holders: Pending Identity, Prince Aboagye
+4x "KB Cell 01 Shepherd"
+    Holders: Pending Identity, Pending Identity, Pending Identity, Pending Identity
+2x "GB Cell 03 Shepherd"
+    Holders: Pending Identity, Pending Identity
+2x "NBB Cell 01 Shepherd"
+    Holders: Charity, Pending Identity
+2x "JB1 Cell 01 Shepherd"
+    Holders: Pending Identity, ⁠Prince Smith
+2x "NCB Cell 03 Shepherd"
+    Holders: Pending Identity, Pending Identity
+2x "JB1 Cell 03 Shepherd"
+    Holders: Clifford Ansu, Pending Identity
+2x "KB2 Cell 05 Shepherd"
+    Holders: Nydia-Ann Ansabea Richardson, Joshua Boyefio
+3x "KB1 Cell 01 Shepherd"
+    Holders: Eric Appah, Princess Serwaa Marfo, Georgette Baffour Awuah
+2x "GB Cell 04 Shepherd"
+    Holders: Pending Identity, Pending Identity
+2x "NBB Cell 02 Shepherd"
+    Holders: Emmanuel Twene Junior, Pending Identity
+2x "KB1 Cell 02 Shepherd"
+    Holders: Anita Atiapah, Elizabeth Owusu
+4x "KB Cell 02 Shepherd"
+    Holders: Pending Identity, Pending Identity, Pending Identity, Pending Identity
+2x "KB2 Cell 04 Shepherd"
+    Holders: Elikplim Adonoo, Aseda Maame Yaa Serwaa Addo
+2x "FBB Cell 01 Shepherd"
+    Holders: Pending Identity, Pending Identity
+2x "GB Cell 02 Shepherd"
+    Holders: Pending Identity, Pending Identity
+2x "JB2 Cell 02 Shepherd"
+    Holders: Harry Opare, Nii Adjiri Parker
+2x "KB Cell Shepherd 03"
+    Holders: Pending Identity, Pending Identity
+2x "KB Cell Shepherd 02"
+    Holders: Pending Identity, Pending Identity
+2x "KB Cell Shepherd 04"
+    Holders: Pending Identity, Pending Identity
+2x "KB Cell Shepherd 01"
+    Holders: Pending Identity, Pending Identity
+2x "JB2 Cell 01 Shepherd"
+    Holders: Pending Identity, Pending Identity
+3x "JB2 Cell 03 Shepherd"
+    Holders: Kimberly E. Chimdi, Shammah Achufusi, Charine Simons
+2x "NCB Cell 01 Shepherd"
+    Holders: Pending Identity, Lucy
+2x "KB1 Cell 03 Shepherd"
+    Holders: Sarah Yorke, Emmnauel
+2x "FBB Cell 03 Shepherd"
+    Holders: Pending Identity, Pending Identity
+2x "GB Cell 01 Shepherd"
+    Holders: Pending Identity, Pending Identity
+4x "KB Cell 03 Shepherd"
+    Holders: Pending Identity, Pending Identity, Pending Identity, Pending Identity
+2x "JB1 Cell 02 Shepherd"
+    Holders: Pending Identity, Hope Ekpe
+2x "KB1 Cell 04 Shepherd"
+    Holders: Margaret Owusu, Caleb Adjei Asante
+2x "FBB Cell 02 Shepherd"
+    Holders: Pending Identity, Pending Identity
+2x "KB2 Cell 01 Shepherd"
+    Holders: Eyram Agboli, Sarah Acquah
+
+--- Duplicate Names ---
+2x "Samuel Annor"
+    Roles: Member of KB2 Cell 02, Member of KB1 Cell 01
+2x "Jesse Asanab"
+    Roles: KB2 Cell Shepherd 02, KB2 Cell Shepherd 02
+2x "Samuel William Dodoo"
+    Roles: KB2 Cell Shepherd 01, KB2 Cell Shepherd 01
+2x "Edwin Aveh"
+    Roles: KB2 Cell Shepherd 03, KB2 Cell Shepherd 03
+2x "Jeremiah Cofie"
+    Roles: KB2 Cell Shepherd 05, KB2 Cell Shepherd 05
+2x "Kingsley Atsutse"
+    Roles: KB1 Cell Shepherd 01, KB1 Cell Sheperd 01
+2x "Vivian Okoroji Adanna"
+    Roles: KB1 Cell Shepherd 04, KB1 Cell Sheperd 04
+2x "Nuhu Kofi Essuman"
+    Roles: KB1 Cell Shepherd 02, KB1 Cell Sheperd 02
+
+--- Special Stats ---
+Total Pending Identities: 59

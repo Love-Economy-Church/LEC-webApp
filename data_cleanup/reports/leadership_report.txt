@@ -1,0 +1,58 @@
+--- Leadership Inference Analysis ---
+
+Conflict: "KB2 Cell 02 Shepherd"
+  - [0 reports] Angel Osei 
+  - [0 reports] Emmanuel Boakye 
+  => UNCERTAIN: Equal or low scores.
+
+Conflict: "Kharis Buscenta Head"
+  - [4 reports] Veronica Oppong (4 Direct Reports)
+  - [0 reports] Isaac Nuamah 
+  => PROBABLE LEADER: Veronica Oppong
+
+Conflict: "KB2 Cell 05 Shepherd"
+  - [0 reports] Nydia-Ann Ansabea Richardson 
+  - [0 reports] Joshua Boyefio 
+  => UNCERTAIN: Equal or low scores.
+
+Conflict: "KB1 Cell 01 Shepherd"
+  - [0 reports] Eric Appah 
+  - [0 reports] Princess Serwaa Marfo 
+  - [0 reports] Georgette Baffour Awuah 
+  => UNCERTAIN: Equal or low scores.
+
+Conflict: "KB1 Cell 02 Shepherd"
+  - [0 reports] Anita Atiapah 
+  - [0 reports] Elizabeth Owusu 
+  => UNCERTAIN: Equal or low scores.
+
+Conflict: "KB2 Cell 04 Shepherd"
+  - [0 reports] Elikplim Adonoo 
+  - [0 reports] Aseda Maame Yaa Serwaa Addo 
+  => UNCERTAIN: Equal or low scores.
+
+Conflict: "JB2 Cell 02 Shepherd"
+  - [0 reports] Harry Opare 
+  - [0 reports] Nii Adjiri Parker 
+  => UNCERTAIN: Equal or low scores.
+
+Conflict: "JB2 Cell 03 Shepherd"
+  - [0 reports] Kimberly E. Chimdi 
+  - [0 reports] Shammah Achufusi 
+  - [0 reports] Charine Simons 
+  => UNCERTAIN: Equal or low scores.
+
+Conflict: "KB1 Cell 03 Shepherd"
+  - [0 reports] Sarah Yorke 
+  - [0 reports] Emmnauel 
+  => UNCERTAIN: Equal or low scores.
+
+Conflict: "KB1 Cell 04 Shepherd"
+  - [0 reports] Margaret Owusu 
+  - [0 reports] Caleb Adjei Asante 
+  => UNCERTAIN: Equal or low scores.
+
+Conflict: "KB2 Cell 01 Shepherd"
+  - [0 reports] Eyram Agboli 
+  - [0 reports] Sarah Acquah 
+  => UNCERTAIN: Equal or low scores.

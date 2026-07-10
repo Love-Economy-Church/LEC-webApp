@@ -1,0 +1,105 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        // Church Brand Colors (extracted from images)
+        'church': {
+          'blue': {
+            DEFAULT: '#0066FF',
+            50: '#E6F0FF',
+            100: '#CCE0FF',
+            200: '#99C2FF',
+            300: '#66A3FF',
+            400: '#3385FF',
+            500: '#0066FF',
+            600: '#0052CC',
+            700: '#003D99',
+            800: '#002966',
+            900: '#001433',
+          },
+          'purple': {
+            DEFAULT: '#8B00FF',
+            50: '#F5E6FF',
+            100: '#EBCCFF',
+            200: '#D699FF',
+            300: '#C266FF',
+            400: '#AD33FF',
+            500: '#8B00FF',
+            600: '#7000CC',
+            700: '#540099',
+            800: '#380066',
+            900: '#1C0033',
+          },
+          'magenta': {
+            DEFAULT: '#C800C8',
+            50: '#FFE6FF',
+            100: '#FFCCFF',
+            200: '#FF99FF',
+            300: '#FF66FF',
+            400: '#FF33FF',
+            500: '#C800C8',
+            600: '#A000A0',
+            700: '#780078',
+            800: '#500050',
+            900: '#280028',
+          },
+          'coral': {
+            DEFAULT: '#FF6B5A',
+            50: '#FFF0EE',
+            100: '#FFE0DD',
+            200: '#FFC1BB',
+            300: '#FFA299',
+            400: '#FF8377',
+            500: '#FF6B5A',
+            600: '#CC5648',
+            700: '#994036',
+            800: '#662B24',
+            900: '#331512',
+          },
+          'yellow': {
+            DEFAULT: '#FFD700',
+            50: '#FFFEF5',
+            100: '#FFFCEB',
+            200: '#FFF9D6',
+            300: '#FFF5C2',
+            400: '#FFF2AD',
+            500: '#FFD700',
+            600: '#CCAC00',
+            700: '#998100',
+            800: '#665600',
+            900: '#332B00',
+          },
+          'lime': {
+            DEFAULT: '#C4FF00',
+            50: '#FAFFEB',
+            100: '#F5FFD6',
+            200: '#EBFFAD',
+            300: '#E0FF85',
+            400: '#D6FF5C',
+            500: '#C4FF00',
+            600: '#9DCC00',
+            700: '#769900',
+            800: '#4E6600',
+            900: '#273300',
+          }
+        }
+      },
+      backgroundImage: {
+        'dot-pattern': 'radial-gradient(circle, currentColor 1px, transparent 1px)',
+        'gradient-church': 'linear-gradient(135deg, #3385FF 0%, #0066FF 50%, #0052CC 100%)',
+        'gradient-dark': 'radial-gradient(circle at 50% 50%, #000108 0%, #000000 100%)',
+      },
+      backgroundSize: {
+        'dot-sm': '8px 8px',
+        'dot-md': '12px 12px',
+        'dot-lg': '16px 16px',
+      }
+    },
+  },
+  plugins: [],
+}
