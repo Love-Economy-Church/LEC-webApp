@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabase';
+import { getFriendlyMessage } from '../../lib/errorUtils';
 import {
   AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip,
@@ -357,7 +358,7 @@ export default function AttendanceAnalytics({ currentRole, overrideUnitId = null
       await fetchAnalytics();
     } catch (err) {
       console.error('Error undoing session:', err);
-      alert('Failed to undo session: ' + (err.message || JSON.stringify(err)));
+      alert(getFriendlyMessage(err, 'The session could not be undone. Please try again.'));
     } finally {
       setUndoing(false);
     }

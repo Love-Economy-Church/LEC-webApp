@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabase';
+import { getFriendlyMessage } from '../../lib/errorUtils';
 import { Save, UserCheck, UserX, Loader2, CheckCircle, XCircle, Check, X, UserPlus, Flame, ExternalLink, Share2, LayoutGrid, ChevronDown, Clock, AlertTriangle, Calendar, Globe, FileText, RotateCcw, Trash2 } from 'lucide-react';
 import ImageModal from '../common/ImageModal';
 import PersonActionModal from '../PersonActionModal';
@@ -168,7 +169,7 @@ export default function AttendanceMarking({ currentRole, overrideUnitId = null, 
         }
       } catch (err) {
         console.error("Error fetching special meeting config:", err);
-        setConfigError(err.message || 'Failed to load special meeting config. Make sure the database migration has been applied.');
+        setConfigError(getFriendlyMessage(err, 'Failed to load special meeting config. Make sure the database migration has been applied.'));
       } finally {
         setLoadingConfig(false);
       }
@@ -199,7 +200,7 @@ export default function AttendanceMarking({ currentRole, overrideUnitId = null, 
       alert("Special Meeting configured successfully!");
     } catch (err) {
       console.error("Error configuring special meeting:", err);
-      alert("Failed to configure Special Meeting: " + err.message);
+      alert(getFriendlyMessage(err, 'Failed to configure Special Meeting. Please try again.'));
     } finally {
       setSubmittingConfig(false);
     }
@@ -421,7 +422,7 @@ export default function AttendanceMarking({ currentRole, overrideUnitId = null, 
 
     } catch (error) {
         console.error("Error submitting attendance:", error);
-        alert("Failed to submit attendance: " + (error.message || JSON.stringify(error)));
+        alert(getFriendlyMessage(error, 'Attendance could not be submitted. Please try again.'));
     } finally {
         setSubmitting(false);
     }
@@ -466,7 +467,7 @@ export default function AttendanceMarking({ currentRole, overrideUnitId = null, 
       await loadMembers(false);
     } catch (err) {
       console.error('Error undoing session:', err);
-      alert('Failed to undo session: ' + (err.message || JSON.stringify(err)));
+      alert(getFriendlyMessage(err, 'The session could not be undone. Please try again.'));
     } finally {
       setUndoing(false);
     }

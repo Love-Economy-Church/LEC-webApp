@@ -1,31 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { KeyRound, Search, Eye, EyeOff, Loader2, Calendar, ShieldAlert } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ErrorState from '../components/ui/ErrorState';
 
 export default function AdminPasswordLogPage() {
   const { userRole } = useAuth();
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loadError, setLoadError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [revealedPasswords, setRevealedPasswords] = useState({}); // { logId: boolean }
 
-  useEffect(() => {
-    async function loadLogs() {
-      try {
-        const { data, error } = await supabase.rpc('get_password_change_logs');
-        if (error) throw error;
-        setLogs(data || []);
-      } catch (err) {
-        setError(err.message || 'Failed to fetch password change logs.');
-      } finally {
-        setLoading(false);
-      }
+  const loadLogs = useCallback(async () => {
+    setLoading(true);
+    setLoadError(null);
+    try {
+      const { data, error } = await supabase.rpc('get_password_change_logs');
+      if (error) throw error;
+      setLogs(data || []);
+    } catch (err) {
+      console.error('Failed to fetch password change logs:', err);
+      setLoadError(err);
+    } finally {
+      setLoading(false);
     }
-    loadLogs();
   }, []);
+
+  useEffect(() => {
+    loadLogs();
+  }, [loadLogs]);
 
   const handleReveal = (logId) => {
     setRevealedPasswords(prev => ({ ...prev, [logId]: true }));
@@ -54,17 +59,22 @@ export default function AdminPasswordLogPage() {
     );
   }
 
-  // If unauthorized
-  if (error || !userRole || userRole.level > 4) {
+  // If unauthorized (role check is separate from load failures)
+  if (!userRole || userRole.level > 4) {
     return (
       <div className="p-6 bg-red-950/20 border-2 border-red-500/30 rounded-xl text-center max-w-xl mx-auto my-12">
         <ShieldAlert className="mx-auto mb-4 text-red-500" size={48} />
         <h3 className="text-red-400 font-black mb-2 text-xl">Access Denied</h3>
         <p className="text-red-300/80 text-sm font-semibold">
-          {error || 'You do not have administrative permissions to view this resource.'}
+          You do not have administrative permissions to view this resource.
         </p>
       </div>
     );
+  }
+
+  // If the logs failed to load (network / server), offer a retry.
+  if (loadError) {
+    return <ErrorState variant="full" error={loadError} onRetry={loadLogs} retrying={loading} />;
   }
 
   return (

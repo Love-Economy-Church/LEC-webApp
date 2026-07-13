@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabase';
+import { getFriendlyMessage } from '../../lib/errorUtils';
 import Modal from '../ui/Modal';
 import { Calendar, Share2, Download, Check, X, Loader2, Globe, FileText, AlertOctagon } from 'lucide-react';
 import { jsPDF } from 'jspdf';
@@ -85,7 +86,7 @@ export default function NetRevelationExportModal({
         setDbData({ units, sessions });
       } catch (err) {
         console.error('Error fetching Net Revelation report data:', err);
-        setErrorMsg(err.message || 'Failed to load records from database');
+        setErrorMsg(getFriendlyMessage(err, 'Failed to load records from the database. Please try again.'));
       } finally {
         setLoading(false);
       }
@@ -343,7 +344,7 @@ export default function NetRevelationExportModal({
       };
     } catch (err) {
       console.error('Error in Net Revelation report calculations useMemo:', err);
-      return { error: err.message || 'Error processing records' };
+      return { error: getFriendlyMessage(err, 'We could not process these records. Please check the data and try again.') };
     }
   }, [dbData, activeScopeId, activeScopeType, activeScopeName, date, serviceName]);
 
@@ -527,7 +528,7 @@ export default function NetRevelationExportModal({
       doc.save(filename);
     } catch (pdfErr) {
       console.error('Error generating PDF:', pdfErr);
-      alert('Failed to generate PDF document: ' + pdfErr.message);
+      alert(getFriendlyMessage(pdfErr, 'The PDF document could not be generated. Please try again.'));
     }
   };
 

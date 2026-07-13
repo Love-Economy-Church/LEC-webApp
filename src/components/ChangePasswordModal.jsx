@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { getFriendlyMessage } from '../lib/errorUtils';
 import { Key, Lock, CheckCircle2, Loader2, X } from 'lucide-react';
 import Modal from './ui/Modal';
 
@@ -47,7 +48,8 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
             }, 2500);
 
         } catch (err) {
-            setError(err.message || 'Failed to update password');
+            console.error('Failed to update password:', err);
+            setError(getFriendlyMessage(err, 'Failed to update password. Please try again.'));
         } finally {
             setLoading(false);
         }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { getFriendlyMessage } from '../lib/errorUtils';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 
 /**
@@ -98,7 +99,7 @@ export default function AuthCallbackPage() {
         sessionStorage.removeItem('linking_person_id');
         await supabase.auth.signOut().catch(() => {});
         setStatus('error');
-        setMessage(err.message || 'Something went wrong. Please try again.');
+        setMessage(getFriendlyMessage(err, 'Something went wrong linking your account. Please try again.'));
         setTimeout(() => navigate('/login', { replace: true }), 4000);
       }
     }

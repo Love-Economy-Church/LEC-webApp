@@ -1,6 +1,6 @@
 import { IonPage, IonContent, useIonToast } from '@ionic/react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { fetchPeople, createPerson, updatePerson, deactivatePerson, reactivatePerson, setPendingPerson } from '../services/peopleService';
 import { fetchHierarchyData, fetchPositions } from '../services/hierarchyService';
@@ -9,6 +9,8 @@ import { motion } from 'framer-motion';
 import ImageModal from '../components/common/ImageModal';
 import PersonActionModal from '../components/PersonActionModal';
 import StatusDropdown from '../components/ui/StatusDropdown';
+import ErrorState from '../components/ui/ErrorState';
+import { getFriendlyMessage } from '../lib/errorUtils';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function PeopleDirectory() {
@@ -22,6 +24,7 @@ export default function PeopleDirectory() {
     const [units, setUnits] = useState([]);
     const [positions, setPositions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterRole, setFilterRole] = useState('All');
     const [filterStatus, setFilterStatus] = useState('All');
@@ -48,36 +51,47 @@ export default function PeopleDirectory() {
         return positions.filter(p => p.unit_type === unit.unit_type);
     }, [selectedUnitId, units, positions]);
 
-    useEffect(() => {
-        Promise.all([
-            fetchPeople(),
-            fetchHierarchyData(),
-            fetchPositions()
-        ]).then(async ([peopleData, unitsData, positionsData]) => {
+    const loadData = useCallback(async () => {
+        setLoading(true);
+        setLoadError(null);
+        try {
+            const [peopleData, unitsData, positionsData] = await Promise.all([
+                fetchPeople(),
+                fetchHierarchyData(),
+                fetchPositions()
+            ]);
             setPeople(peopleData);
             setUnits(unitsData); // This is flat array of units
             setPositions(positionsData);
-            
+
             // Pre-calculate which units this user is allowed to manage (RBAC)
             if (userRole) {
-                 try {
-                     const allowed = await getManagedUnits();
-                     if (allowed === 'ALL') {
-                         setIsAllManaged(true);
-                         setManagedUnitIds(new Set());
-                     } else {
-                         setIsAllManaged(false);
-                         setManagedUnitIds(allowed);
-                     }
-                 } catch(e) {
-                     console.error("Failed to load managed units:", e);
-                     setIsAllManaged(false);
-                     setManagedUnitIds(new Set());
-                 }
+                try {
+                    const allowed = await getManagedUnits();
+                    if (allowed === 'ALL') {
+                        setIsAllManaged(true);
+                        setManagedUnitIds(new Set());
+                    } else {
+                        setIsAllManaged(false);
+                        setManagedUnitIds(allowed);
+                    }
+                } catch (e) {
+                    console.error("Failed to load managed units:", e);
+                    setIsAllManaged(false);
+                    setManagedUnitIds(new Set());
+                }
             }
-            
-        }).finally(() => setLoading(false));
+        } catch (err) {
+            console.error("Failed to load directory:", err);
+            setLoadError(err);
+        } finally {
+            setLoading(false);
+        }
     }, [userRole, getManagedUnits]);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     // Handle incoming URL parameters
     useEffect(() => {
@@ -177,7 +191,12 @@ export default function PeopleDirectory() {
             ));
         } catch (err) {
             console.error(`Failed to change status to ${newStatus}:`, err);
-            alert(`Failed to update status`);
+            presentToast({
+                message: getFriendlyMessage(err, 'Could not update status. Please try again.'),
+                duration: 3000,
+                position: 'bottom',
+                color: 'danger',
+            });
         } finally {
             setChangingStatusId(null);
         }
@@ -217,7 +236,12 @@ export default function PeopleDirectory() {
             });
         } catch (err) {
             console.error("Failed to save:", err);
-            alert(`Failed to save changes: ${err?.message || err}`);
+            presentToast({
+                message: getFriendlyMessage(err, 'Could not save changes. Please try again.'),
+                duration: 3500,
+                position: 'bottom',
+                color: 'danger',
+            });
         }
     };
 
@@ -225,6 +249,15 @@ export default function PeopleDirectory() {
         <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-8 w-8 border-b-4 border-church-blue-500"></div>
         </div>
+    );
+
+    if (loadError) return (
+        <ErrorState
+            variant="full"
+            error={loadError}
+            onRetry={loadData}
+            retrying={loading}
+        />
     );
 
     return (

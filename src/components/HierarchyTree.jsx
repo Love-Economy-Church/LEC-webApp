@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { fetchHierarchyData } from "../services/hierarchyService";
 import {
     ChevronRight,
@@ -19,6 +19,7 @@ import MindMapDrillDown from "./MindMapDrillDown";
 
 import { buildTree, filterNodes } from "../utils/treeUtils";
 import { useAuth } from "../contexts/AuthContext";
+import ErrorState from "./ui/ErrorState";
 
 // ================================
 // TREE NODE COMPONENT
@@ -303,26 +304,30 @@ export default function HierarchyTree({ focusTrigger }) {
         }
     }, [focusTrigger]);
 
-    useEffect(() => {
-        async function loadData() {
-            try {
-                const [managedUnits, data] = await Promise.all([
-                    getManagedUnits(),
-                    fetchHierarchyData()
-                ]);
-                let filteredData = data;
-                if (managedUnits !== 'ALL') {
-                    filteredData = data.filter(unit => managedUnits.has(unit.id));
-                }
-                setOriginalTree(buildTree(filteredData));
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
+    const loadData = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const [managedUnits, data] = await Promise.all([
+                getManagedUnits(),
+                fetchHierarchyData()
+            ]);
+            let filteredData = data;
+            if (managedUnits !== 'ALL') {
+                filteredData = data.filter(unit => managedUnits.has(unit.id));
             }
+            setOriginalTree(buildTree(filteredData));
+        } catch (err) {
+            console.error('Failed to load hierarchy:', err);
+            setError(err);
+        } finally {
+            setLoading(false);
         }
-        loadData();
     }, [getManagedUnits]);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     const displayedTree = useMemo(() => {
         if (!searchTerm) return originalTree;
@@ -339,10 +344,7 @@ export default function HierarchyTree({ focusTrigger }) {
     );
 
     if (error) return (
-        <div className="p-6 bg-church-coral-500/20 border-2 border-church-coral-500 rounded-xl text-center">
-            <h3 className="text-church-coral-400 font-black mb-2">Failed to load hierarchy</h3>
-            <p className="text-church-coral-300/70 text-sm font-semibold">{error}</p>
-        </div>
+        <ErrorState variant="full" error={error} onRetry={loadData} retrying={loading} />
     );
 
     return (

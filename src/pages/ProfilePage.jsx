@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
+import { getFriendlyMessage } from '../lib/errorUtils';
 
 const PRESETS = [
   { id: 'grad-1', name: 'Cosmic Violet', gradient: 'from-violet-600 via-fuchsia-600 to-pink-600', colors: ['#7c3aed', '#c084fc'] },
@@ -311,7 +312,8 @@ export default function ProfilePage() {
       // 2. Sync changes globally
       await refreshUserRole();
     } catch (err) {
-      setUpdateError(err.message || 'Failed to update profile.');
+      console.error('Failed to update profile:', err);
+      setUpdateError(getFriendlyMessage(err, 'Failed to update profile. Please try again.'));
     } finally {
       setUpdateLoading(false);
     }
@@ -392,7 +394,8 @@ export default function ProfilePage() {
         setPasswordSuccess('');
       }, 2000);
     } catch (err) {
-      setPasswordError(err.message || 'Failed to update password.');
+      console.error('Failed to update password:', err);
+      setPasswordError(getFriendlyMessage(err, 'Failed to update password. Please try again.'));
     } finally {
       setPasswordLoading(false);
     }
@@ -418,7 +421,7 @@ export default function ProfilePage() {
       });
       if (error) throw error;
     } catch (err) {
-      setGmailLinkError(err.message || 'Failed to start Google sign-in. Please try again.');
+      setGmailLinkError(getFriendlyMessage(err, 'Failed to start Google sign-in. Please try again.'));
       setGmailLinkLoading(false);
     }
   };

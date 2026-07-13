@@ -56,7 +56,7 @@ export default function InstallBanner() {
         <div className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[999] animate-in slide-in-from-bottom-4 duration-300">
             <div className="bg-slate-900/95 backdrop-blur-xl border border-church-blue-500/40 rounded-2xl p-4 shadow-2xl flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl overflow-hidden border border-church-blue-500/30 shrink-0 bg-black/30">
-                    <img src="/lec-logo.png" alt="LEC" className="w-full h-full object-contain p-0.5" />
+                    <img src="/lec-logo.jpeg" alt="LEC" className="w-full h-full object-contain p-0.5" />
                 </div>
                 <div className="flex-1 min-w-0">
                     <p className="text-white font-black text-sm leading-tight">Install LEC - Alpha</p>

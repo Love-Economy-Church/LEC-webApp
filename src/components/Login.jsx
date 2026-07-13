@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { getFriendlyMessage } from '../lib/errorUtils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CheckCircle2, Lock, Mail, Loader2, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -104,7 +105,8 @@ export default function Login() {
       navigate(from, { replace: true });
 
     } catch (err) {
-      setError(err.message || 'Failed to sign in');
+      console.error('Failed to sign in:', err);
+      setError(getFriendlyMessage(err, 'Failed to sign in. Please check your details and try again.'));
     } finally {
       setLoading(false);
     }
@@ -134,7 +136,8 @@ export default function Login() {
       if (error) throw error;
       // Browser will navigate to Google — loading stays true until redirect
     } catch (err) {
-      setError(err.message || 'Failed to sign in with Google');
+      console.error('Failed to sign in with Google:', err);
+      setError(getFriendlyMessage(err, 'Failed to sign in with Google. Please try again.'));
       setGoogleLoading(false);
     }
   };

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { getFriendlyMessage } from '../lib/errorUtils';
 import { useAuth } from '../contexts/AuthContext';
 import { LogOut, Loader2, ShieldCheck, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -38,7 +39,8 @@ export default function EmailGatePage() {
       if (error) throw error;
       // Browser will redirect to Google — loading stays true during redirect
     } catch (err) {
-      setError(err.message || 'Failed to start Google sign-in. Please try again.');
+      console.error('Failed to start Google sign-in:', err);
+      setError(getFriendlyMessage(err, 'Failed to start Google sign-in. Please try again.'));
       setLoading(false);
     }
   };
