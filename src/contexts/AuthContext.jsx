@@ -69,10 +69,16 @@ export function AuthProvider({ children }) {
         });
       } else {
          // User logged in but no profile found in 'people' table logic
-         console.warn("User logged in but no linked 'people' record found. Signing out.");
-         setUserRole(null);
-         sessionStorage.setItem('auth_error', "This account isn't linked to an LEC Alpha profile. Contact your admin.");
-         await supabase.auth.signOut();
+         const isLinking = window.location.search.includes('mode=link');
+         if (!isLinking) {
+           console.warn("User logged in but no linked 'people' record found. Signing out.");
+           setUserRole(null);
+           sessionStorage.setItem('auth_error', "This account isn't linked to an LEC Alpha profile. Contact your admin.");
+           await supabase.auth.signOut();
+         } else {
+           console.info("User logged in with unlinked account during Gmail link flow. Not signing out.");
+           setUserRole(null);
+         }
       }
     } catch (err) {
       console.error("Unexpected error fetching role:", err);

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import ImageModal from './common/ImageModal';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function NodeDetailsPanel({ node, onClose, onAddChild, onViewRegistry, onViewPersonDetails }) {
+export default function NodeDetailsPanel({ node, onClose, onAddChild, onViewRegistry }) {
     const { user, canManage } = useAuth();
     const [modalConfig, setModalConfig] = useState({ isOpen: false, src: '', title: '' });
     const [hasPermission, setHasPermission] = useState(false);
@@ -110,8 +110,7 @@ export default function NodeDetailsPanel({ node, onClose, onAddChild, onViewRegi
                                         {leads.map((leader, i) => (
                                             <div 
                                                 key={`cell-p-${i}`} 
-                                                onClick={() => onViewPersonDetails && onViewPersonDetails({ ...leader, unitName: label })}
-                                                className="p-3 rounded-2xl bg-gradient-to-br from-yellow-500/20 via-slate-800 to-slate-900 border border-yellow-500/40 flex items-center gap-3 shadow-xl shadow-yellow-500/5 transition-all group hover:scale-[1.02] hover:border-yellow-400 cursor-pointer"
+                                                className="p-3 rounded-2xl bg-gradient-to-br from-yellow-500/20 via-slate-800 to-slate-900 border border-yellow-500/40 flex items-center gap-3 shadow-xl shadow-yellow-500/5 transition-all group"
                                             >
                                                 <div
                                                     onClick={(e) => { e.stopPropagation(); leader.photo && openImage(e, leader.photo, leader.name); }}
@@ -153,8 +152,7 @@ export default function NodeDetailsPanel({ node, onClose, onAddChild, onViewRegi
                                             {assistants.map((leader, i) => (
                                                 <div 
                                                     key={`lead-a-${i}`} 
-                                                    onClick={() => onViewPersonDetails && onViewPersonDetails({ ...leader, unitName: label })}
-                                                    className="p-2.5 rounded-xl bg-gradient-to-r from-violet-500/10 to-church-purple-500/10 border border-violet-500/20 flex items-center gap-2.5 hover:bg-violet-500/20 hover:border-violet-400 transition-all group shadow-md cursor-pointer"
+                                                    className="p-2.5 rounded-xl bg-gradient-to-r from-violet-500/10 to-church-purple-500/10 border border-violet-500/20 flex items-center gap-2.5 transition-all group shadow-md"
                                                 >
                                                     <div
                                                         onClick={(e) => { e.stopPropagation(); leader.photo && openImage(e, leader.photo, leader.name); }}
@@ -188,8 +186,7 @@ export default function NodeDetailsPanel({ node, onClose, onAddChild, onViewRegi
                                         {node.data.members.map((member, i) => (
                                             <div 
                                                 key={`mem-${i}`} 
-                                                onClick={() => onViewPersonDetails && onViewPersonDetails({ ...member, unitName: label })}
-                                                className="p-2 rounded-xl bg-slate-800/20 border border-slate-700/20 flex items-center gap-2.5 hover:bg-slate-700/20 hover:border-slate-600/50 transition-all group cursor-pointer"
+                                                className="p-2 rounded-xl bg-slate-800/20 border border-slate-700/20 flex items-center gap-2.5 transition-all group"
                                             >
                                                 <div
                                                     onClick={(e) => { e.stopPropagation(); member.photo && openImage(e, member.photo, member.name); }}

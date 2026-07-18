@@ -17,7 +17,6 @@ import CollapsibleNode from '../components/CollapsibleNode';
 import NodeDetailsPanel from '../components/NodeDetailsPanel';
 import ImageModal from '../components/common/ImageModal';
 import AddUnitModal from '../components/AddUnitModal';
-import PersonProfileModal from '../components/PersonProfileModal';
 import MindMapSearch from '../components/mindmap/MindMapSearch';
 import { layoutTree, getStyle } from '../utils/mindmapLayoutUtils';
 
@@ -47,7 +46,6 @@ export default function HierarchyMindMapPage() {
     const [modalConfig, setModalConfig] = useState({ isOpen: false, src: '', title: '' });
     const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
     const [targetParent, setTargetParent] = useState(null);
-    const [personProfileData, setPersonProfileData] = useState(null);
 
     const handleToggle = useCallback((nodeId) => {
         setCollapsedIds(prev => {
@@ -254,7 +252,6 @@ export default function HierarchyMindMapPage() {
                             node={selectedNodeData}
                             onClose={() => setSelectedNodeId(null)}
                             onAddChild={handleAddChild}
-                            onViewPersonDetails={setPersonProfileData}
                         />
                     </div>
                 </div>
@@ -306,12 +303,6 @@ export default function HierarchyMindMapPage() {
                 onClose={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
                 imageSrc={modalConfig.src}
                 title={modalConfig.title}
-            />
-
-            <PersonProfileModal
-                isOpen={!!personProfileData}
-                onClose={() => setPersonProfileData(null)}
-                person={personProfileData}
             />
         </div>
     );

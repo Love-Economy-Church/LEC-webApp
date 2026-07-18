@@ -400,7 +400,7 @@ function BuscentaRow({ buscenta, isSelected, onSelect, theme }) {
               })() : (
                 <>
                   <p className="text-[7px] font-black uppercase tracking-widest text-slate-600 px-1 mb-1.5">
-                    Cells · {sortedChildren.length}
+                    {getChildLabel(buscenta.unit_type)} - {sortedChildren.length}
                   </p>
                   {sortedChildren.length === 0 ? (
                     <p className="text-[9px] text-slate-600 italic text-center py-3">No cells yet</p>
@@ -524,7 +524,7 @@ function CellRowList({ cells, theme, accentColor }) {
 // DRILL PANEL — horizontal absolute overlay panel showing buscentas of selected MC
 // ==========================================
 function DrillPanel({ mc, selectedBuscentaId, onBuscentaSelect, scrollRef, theme }) {
-  const buscentas = mc.children || [];
+  const childrenList = mc.children || [];
   const panelBgColor = theme?.panelBgColor || "#0b0f19";
   const panelBorderColor = theme?.panelBorderColor || "rgba(255, 255, 255, 0.08)";
 
@@ -559,21 +559,21 @@ function DrillPanel({ mc, selectedBuscentaId, onBuscentaSelect, scrollRef, theme
           <h4 className="text-[12px] font-black text-white leading-tight uppercase tracking-tight truncate mt-0.5">
             {mc.name}
           </h4>
-          <p className="text-[8px] text-slate-500 font-bold mt-0.5">{buscentas.length} buscentas</p>
+          <p className="text-[8px] text-slate-500 font-bold mt-0.5">{getChildLabel(mc.unit_type)} - {childrenList.length}</p>
         </div>
 
-        {/* Buscenta list */}
+        {/* List */}
         <div className="flex-1 overflow-y-auto p-3 space-y-2 no-scrollbar">
-          {buscentas.length === 0 ? (
-            <p className="text-[9px] text-slate-600 italic text-center py-8">No buscentas yet</p>
+          {childrenList.length === 0 ? (
+            <p className="text-[9px] text-slate-600 italic text-center py-8">No {getChildLabel(mc.unit_type).toLowerCase()} yet</p>
           ) : (
-            buscentas.map((busc) => (
+            childrenList.map((childNode) => (
               <BuscentaRow
-                key={busc.id}
-                buscenta={busc}
+                key={childNode.id}
+                buscenta={childNode}
                 theme={theme}
-                isSelected={selectedBuscentaId === busc.id}
-                onSelect={() => onBuscentaSelect(busc.id)}
+                isSelected={selectedBuscentaId === childNode.id}
+                onSelect={() => onBuscentaSelect(childNode.id)}
               />
             ))
           )}
@@ -967,6 +967,58 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                                 drillPanelRef={drillPanelRef}
                               />
                             ))}
+
+                          {/* Cell members inside the column */}
+                          {mc.unit_type === 'CELL' && (() => {
+                            const cellPeople = getCellPeople(mc);
+                            const shepherds = cellPeople.filter(p => p.isShepherd);
+                            const members = cellPeople.filter(p => !p.isShepherd);
+                            return (
+                              <div className="space-y-3 mt-1">
+                                {shepherds.length > 0 && (
+                                  <div>
+                                    <p className="text-[8px] font-black uppercase tracking-widest text-violet-400/70 mb-1.5 px-1">
+                                      Shepherds
+                                    </p>
+                                    <div className="space-y-1.5">
+                                      {shepherds.map((p, i) => (
+                                        <div
+                                          key={`col-shep-${i}`}
+                                          className="flex items-center gap-3 bg-violet-950/10 border border-violet-500/20 rounded-2xl p-2.5"
+                                        >
+                                          <Avatar person={p} size="sm" accent="border-violet-500/30" />
+                                          <span className="text-[10px] text-violet-300 font-bold truncate">
+                                            {p.name}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {members.length > 0 && (
+                                  <div>
+                                    <p className="text-[8px] font-black uppercase tracking-widest text-slate-500/70 mb-1.5 px-1">
+                                      Members
+                                    </p>
+                                    <div className="space-y-1.5">
+                                      {members.map((m, i) => (
+                                        <div
+                                          key={`col-mem-${i}`}
+                                          className="flex items-center gap-3 bg-slate-900/50 rounded-2xl p-2.5 border border-white/5"
+                                        >
+                                          <Avatar person={m} size="sm" accent="border-white/10" />
+                                          <span className="text-[10px] text-slate-300 font-bold truncate">
+                                            {m.name}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>

@@ -1,5 +1,5 @@
 import { AuthProvider, useAuth } from './contexts/AuthContext'
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import Login from './components/Login'
@@ -49,6 +49,9 @@ function AppContent() {
             <Route path="admin/passwords" element={<AdminPasswordLogPage />} />
           </Route>
         </Route>
+
+        {/* Catch-all route to redirect unknown URLs to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
