@@ -318,27 +318,64 @@ export const updatePerson = async (id, updates) => {
         .single();
 
     if (personError) throw personError;
-
     // 2. Handle Assignment Update (Transfer)
     if (updates.unitId && updates.positionId) {
-        // Deactivate old assignments
-        await supabase
+        // Find existing active assignment to see if anything actually changed
+        const { data: existingActive } = await supabase
             .from('position_assignments')
-            .update({ is_active: false })
-            .eq('person_id', id);
+            .select('id, unit_id, position_id')
+            .eq('person_id', id)
+            .eq('is_active', true)
+            .maybeSingle();
 
-        // Create new one
-        const { error: assignError } = await supabase
-            .from('position_assignments')
-            .insert([{
-                person_id: id,
-                unit_id: updates.unitId,
-                position_id: updates.positionId,
-                is_active: true,
-                is_primary: true
-            }]);
+        if (!existingActive || existingActive.unit_id !== updates.unitId || existingActive.position_id !== updates.positionId) {
+            // Something has actually changed or they have no active assignment!
+            // First check if an assignment with this person, unit, position, and start_date = today already exists
+            const today = new Date().toISOString().split('T')[0];
+            const { data: duplicate } = await supabase
+                .from('position_assignments')
+                .select('id')
+                .eq('person_id', id)
+                .eq('unit_id', updates.unitId)
+                .eq('position_id', updates.positionId)
+                .eq('start_date', today)
+                .maybeSingle();
 
-        if (assignError) throw assignError;
+            if (duplicate) {
+                // If it already exists for today (even if inactive), we can just reactivate it!
+                // This prevents violating the unique(person_id, position_id, unit_id, start_date) constraint
+                await supabase
+                    .from('position_assignments')
+                    .update({ is_active: false })
+                    .eq('person_id', id);
+
+                const { error: reactivateError } = await supabase
+                    .from('position_assignments')
+                    .update({ is_active: true, is_primary: true })
+                    .eq('id', duplicate.id);
+
+                if (reactivateError) throw reactivateError;
+            } else {
+                // Deactivate old assignments
+                await supabase
+                    .from('position_assignments')
+                    .update({ is_active: false })
+                    .eq('person_id', id);
+
+                // Create new one
+                const { error: assignError } = await supabase
+                    .from('position_assignments')
+                    .insert([{
+                        person_id: id,
+                        unit_id: updates.unitId,
+                        position_id: updates.positionId,
+                        is_active: true,
+                        is_primary: true
+                    }]);
+
+                if (assignError) throw assignError;
+            }
+        }
     }
 
     // Invalidate People + Hierarchy caches

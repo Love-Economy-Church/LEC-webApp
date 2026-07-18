@@ -1,19 +1,78 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { NavLink, useLocation, Outlet } from 'react-router-dom'
-import { Home, Users, List, CheckCircle2, User } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { NavLink, useLocation, Outlet, useNavigate } from 'react-router-dom'
+import { Home, Users, CheckCircle2, User, MessageCircle, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useSwipeNavigation } from '../../hooks/useSwipeNavigation'
+import { useUnreadMessages } from '../../hooks/useUnreadMessages'
+import { useAuth } from '../../contexts/AuthContext'
+import { supabase } from '../../lib/supabase'
 import InstallBanner from '../InstallBanner'
 
-const ROUTES = ['/', '/directory', '/attendance', '/profile']
+const ROUTES = ['/', '/directory', '/attendance', '/chats', '/profile']
 
 export default function MainLayout() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { onSwipeLeft, onSwipeRight, currentIndex } = useSwipeNavigation()
   const mainTouchStart = useRef(null)
   const mainRef = useRef(null)
   const scrollTimeout = useRef(null)
   const [isScrolling, setIsScrolling] = useState(false)
+  const { unreadCount } = useUnreadMessages()
+  const { userRole } = useAuth()
+
+  // Notification Banner State
+  const [notification, setNotification] = useState(null)
+
+  // Global Real-time Chat Notification Listener
+  useEffect(() => {
+    if (!userRole?.personId) return;
+
+    const channel = supabase
+      .channel('global-chat-notifications')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'private_messages',
+      }, async (payload) => {
+        // Only notify if we are the recipient and not currently on the chats page
+        if (payload.new?.recipient_id === userRole.personId && location.pathname !== '/chats') {
+          try {
+            // Fetch sender's name and photo
+            const { data } = await supabase
+              .from('people')
+              .select('full_name, photo_url')
+              .eq('id', payload.new.sender_id)
+              .single();
+              
+            const senderName = data?.full_name || 'Someone';
+            const photoUrl = data?.photo_url;
+            
+            // Show custom toast notification
+            setNotification({
+              sender: senderName,
+              photo: photoUrl,
+              message: payload.new.message,
+              id: payload.new.id
+            });
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+              setNotification(prev => prev?.id === payload.new.id ? null : prev);
+            }, 5000);
+          } catch (e) {
+            console.error("Error fetching sender for notification:", e);
+          }
+        }
+      })
+      .subscribe((status) => {
+        console.log('[NotificationSub] Status:', status);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userRole?.personId, location.pathname]);
 
   const handleScroll = useCallback(() => {
     setIsScrolling(true)
@@ -54,6 +113,7 @@ export default function MainLayout() {
               <NavItem to="/" icon={<Home size={18} />} label="Home" />
               <NavItem to="/directory" icon={<Users size={18} />} label="Directory" />
               <NavItem to="/attendance" icon={<CheckCircle2 size={18} />} label="Attendance" />
+              <NavItem to="/chats" icon={<MessageCircle size={18} />} label="Chats" badge={unreadCount} />
               <NavItem to="/profile" icon={<User size={18} />} label="Profile" />
             </div>
           </div>
@@ -72,11 +132,20 @@ export default function MainLayout() {
         </header>
 
         {/* Content Area */}
+        {/* /mindmap and /chats both need full-bleed: no padding, no scroll wrapper */}
         <main
           ref={mainRef}
-          className="flex-1 overflow-y-auto custom-scrollbar touch-pan-y"
+          className={`flex-1 custom-scrollbar touch-pan-y ${
+            location.pathname === '/chats' || location.pathname === '/mindmap'
+              ? 'overflow-hidden'
+              : 'overflow-y-auto'
+          }`}
         >
-          <div className="px-4 md:px-8 py-6 md:py-8 pb-24 md:pb-8">
+          <div className={
+            location.pathname === '/chats' || location.pathname === '/mindmap'
+              ? 'h-full'
+              : 'px-4 md:px-8 py-6 md:py-8 pb-24 md:pb-8'
+          }>
             <Outlet />
           </div>
         </main>
@@ -89,35 +158,89 @@ export default function MainLayout() {
             <TabItem to="/" icon={<Home size={20} />} label="Home" />
             <TabItem to="/directory" icon={<Users size={20} />} label="Directory" />
             <TabItem to="/attendance" icon={<CheckCircle2 size={20} />} label="Attendance" />
+            <TabItem to="/chats" icon={<MessageCircle size={20} />} label="Chats" badge={unreadCount} />
             <TabItem to="/profile" icon={<User size={20} />} label="Profile" />
           </div>
         </nav>
+
         {/* PWA Install Banner */}
         <InstallBanner />
+
+        {/* Global Toast Notification */}
+        <AnimatePresence>
+          {notification && (
+            <motion.div
+              initial={{ opacity: 0, y: -80, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -80, scale: 0.9 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+              onClick={() => {
+                setNotification(null)
+                navigate('/chats')
+              }}
+              className="fixed top-16 md:top-20 left-4 right-4 md:left-auto md:right-6 md:w-96 z-[9999] bg-[#0b1329]/95 backdrop-blur-xl border border-church-blue-500/30 p-4 rounded-2xl shadow-2xl flex items-center gap-3 cursor-pointer hover:border-church-blue-500/60 transition-colors select-none"
+              style={{ boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04)' }}
+            >
+              <div className="w-10 h-10 rounded-xl bg-slate-800 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+                {notification.photo ? (
+                  <img src={notification.photo} alt={notification.sender} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-church-blue-600 flex items-center justify-center text-white font-bold text-sm uppercase">
+                    {notification.sender[0]}
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-black uppercase tracking-wider text-church-blue-400 flex items-center gap-1">
+                  <MessageCircle size={10} />
+                  New Private Message
+                </p>
+                <p className="text-sm font-bold text-white truncate mt-0.5">{notification.sender}</p>
+                <p className="text-xs text-slate-300 truncate mt-0.5">"{notification.message}"</p>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setNotification(null)
+                }}
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/5 transition-colors shrink-0"
+              >
+                <X size={16} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
 }
 
-function NavItem({ to, icon, label }) {
+function NavItem({ to, icon, label, badge = 0 }) {
   return (
     <NavLink
       to={to}
       className={({ isActive }) => `
-        flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200
+        relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200
         ${isActive
           ? 'bg-gradient-church text-white shadow-lg'
           : 'text-gray-400 hover:text-church-blue-400 hover:bg-white/5'
         }
       `}
     >
-      {icon}
+      <span className="relative">
+        {icon}
+        {badge > 0 && (
+          <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-0.5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center leading-none animate-pulse">
+            {badge > 9 ? '9+' : badge}
+          </span>
+        )}
+      </span>
       <span>{label}</span>
     </NavLink>
   )
 }
 
-function TabItem({ to, icon, label }) {
+function TabItem({ to, icon, label, badge = 0 }) {
   return (
     <NavLink
       to={to}
@@ -128,10 +251,15 @@ function TabItem({ to, icon, label }) {
     >
       {({ isActive }) => (
         <>
-          <div className={`p-1 rounded-lg transition-all duration-200 ${
+          <div className={`relative p-1 rounded-lg transition-all duration-200 ${
             isActive ? 'bg-church-blue-500/10 text-church-blue-400 scale-105' : 'text-slate-500'
           }`}>
             {icon}
+            {badge > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[15px] h-[15px] px-0.5 bg-red-500 text-white text-[8px] font-black rounded-full flex items-center justify-center leading-none">
+                {badge > 9 ? '9+' : badge}
+              </span>
+            )}
           </div>
           <span className={`text-[8.5px] font-black tracking-wider uppercase transition-colors duration-200 ${
             isActive ? 'text-church-blue-400' : 'text-slate-500'

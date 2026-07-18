@@ -11,6 +11,7 @@ import PeopleDirectoryPage from './pages/PeopleDirectoryPage'
 import MemberProfilePage from './pages/MemberProfilePage'
 import HierarchyMindMapPage from './pages/HierarchyMindMapPage'
 import AttendancePage from './pages/AttendancePage'
+import ChatsPage from './pages/ChatsPage'
 import ProfilePage from './pages/ProfilePage'
 import EmailGatePage from './pages/EmailGatePage'
 import AdminPasswordLogPage from './pages/AdminPasswordLogPage'
@@ -43,6 +44,7 @@ function AppContent() {
             <Route path="directory/:personId" element={<MemberProfilePage />} />
             <Route path="mindmap" element={<HierarchyMindMapPage />} />
             <Route path="attendance" element={<AttendancePage />} />
+            <Route path="chats" element={<ChatsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="admin/passwords" element={<AdminPasswordLogPage />} />
           </Route>

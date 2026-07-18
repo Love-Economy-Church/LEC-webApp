@@ -51,6 +51,11 @@ export const fetchHierarchyData = async () => {
                 const p = a.people;
                 if (!p) return;
 
+                // Hide System Admin from showing up in hierarchy tree/list
+                if (a.positions?.title === 'Admin') {
+                    return;
+                }
+
                 // Dynamically calculate membership state strictly to apply pipeline to basic members
                 let presentCount = 0;
                 if (p.attendance_records && p.attendance_records.length > 0) {

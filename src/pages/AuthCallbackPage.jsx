@@ -30,8 +30,8 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     if (isLinkMode) return; // handled separately below
 
-    if (!loading && user)  navigate('/',      { replace: true });
-    if (!loading && !user) navigate('/login', { replace: true });
+    if (!loading && user)  navigate('/attendance', { replace: true });
+    if (!loading && !user) navigate('/login',      { replace: true });
   }, [user, loading, isLinkMode, navigate]);
 
   // ── Link-mode: extract Google email and save to profile ─────────────────

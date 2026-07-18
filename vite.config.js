@@ -55,6 +55,7 @@ export default defineConfig({
         ]
       },
       workbox: {
+        maximumFileSizeToCacheInBytes: 5000000,
         skipWaiting: true,
         clientsClaim: true,
         // Cache all assets, fonts, and images

@@ -2,13 +2,15 @@ import { IonPage, IonContent } from '@ionic/react';
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { fetchPeople } from '../services/peopleService'
-import { Users, LayoutGrid, CheckCircle2, UserPlus } from 'lucide-react'
+import { Users, LayoutGrid, CheckCircle2, UserPlus, Download, Share } from 'lucide-react'
 import { motion } from 'framer-motion'
 import HierarchyTree from '../components/HierarchyTree'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useAnimatedCounter } from '../hooks/useAnimatedCounter'
 import FirstTimersWeeklyModal from '../components/attendance/FirstTimersWeeklyModal'
+import BirthdaySection from '../components/birthdays/BirthdaySection'
+import AnnouncementsSection from '../components/announcements/AnnouncementsSection'
 
 const stagger = {
   hidden: {},
@@ -18,6 +20,41 @@ const stagger = {
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
+}
+
+// ── PWA Install Hook ──
+function usePWAInstall() {
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [canInstall, setCanInstall] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
+
+  useEffect(() => {
+    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches);
+    const ios = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+    setIsIOS(ios);
+    if (ios && !window.matchMedia('(display-mode: standalone)').matches) {
+      setCanInstall(true);
+    }
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setCanInstall(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const install = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      setDeferredPrompt(null);
+      setCanInstall(false);
+    }
+  };
+
+  return { canInstall, isIOS, isStandalone, install };
 }
 
 export default function DashboardPage() {
@@ -220,6 +257,9 @@ export default function DashboardPage() {
     fetchStats()
   }, [location.pathname, getManagedUnits])
 
+  const { canInstall, isIOS, install } = usePWAInstall();
+  const [showIOSGuide, setShowIOSGuide] = useState(false);
+
   const greeting = useMemo(() => {
     const hour = new Date().getHours()
     if (hour < 12) return 'Good Morning'
@@ -250,14 +290,49 @@ export default function DashboardPage() {
             {dashboardTitle} <span className="text-slate-500 font-bold">{titleSuffix}</span>
           </h1>
           <div className="flex items-center gap-2 mt-2 text-slate-500">
-           
             <span className="text-[11px] font-semibold">
               {userRole?.unitName ? 'Here is what is happening in your Church' : 'Welcome to the Alpha Branch portal'}
             </span>
           </div>
         </div>
 
-  
+        {/* ── Install App Button ── */}
+        {canInstall && (
+          <div className="relative">
+            {isIOS ? (
+              <div className="relative">
+                <button
+                  id="install-app-btn"
+                  onClick={() => setShowIOSGuide(g => !g)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-church-blue-600 to-church-blue-500 text-white text-sm font-bold shadow-lg shadow-church-blue-500/30 hover:shadow-church-blue-500/50 hover:scale-105 transition-all duration-200 border border-church-blue-400/40"
+                >
+                  <Download size={16} />
+                  Install App
+                </button>
+                {showIOSGuide && (
+                  <div className="absolute right-0 top-12 w-72 bg-slate-900/95 backdrop-blur-xl border border-church-blue-500/40 rounded-2xl p-4 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <p className="text-white font-bold text-sm mb-2">Install on iPhone / iPad</p>
+                    <ol className="text-slate-400 text-xs space-y-2">
+                      <li className="flex items-start gap-2"><span className="text-church-blue-400 font-bold shrink-0">1.</span> Tap the <span className="text-church-blue-400 font-bold mx-1">Share</span> button at the bottom of Safari</li>
+                      <li className="flex items-start gap-2"><span className="text-church-blue-400 font-bold shrink-0">2.</span> Scroll down and tap <span className="text-church-blue-400 font-bold mx-1">Add to Home Screen</span></li>
+                      <li className="flex items-start gap-2"><span className="text-church-blue-400 font-bold shrink-0">3.</span> Tap <span className="text-church-blue-400 font-bold mx-1">Add</span> to confirm</li>
+                    </ol>
+                    <button onClick={() => setShowIOSGuide(false)} className="mt-3 text-xs text-slate-500 hover:text-slate-300 transition-colors">Dismiss</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                id="install-app-btn"
+                onClick={install}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-church-blue-600 to-church-blue-500 text-white text-sm font-bold shadow-lg shadow-church-blue-500/30 hover:shadow-church-blue-500/50 hover:scale-105 transition-all duration-200 border border-church-blue-400/40"
+              >
+                <Download size={16} />
+                Install App
+              </button>
+            )}
+          </div>
+        )}
       </motion.div>
 
       {/* ── Stats Cards ── */}
@@ -317,13 +392,19 @@ export default function DashboardPage() {
         </motion.div>
       </motion.div>
 
+      {/* ── Birthday Celebrations ── */}
+      <BirthdaySection />
+
+      {/* ── Announcements ── */}
+      <AnnouncementsSection userRole={userRole} />
+
       {/* Hierarchy Tree Card */}
       <motion.div 
         ref={treeContainerRef}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className={`border rounded-2xl p-4 md:p-6 shadow-xl overflow-hidden transition-colors duration-1000 ${highlightTree ? 'border-church-blue-500/50 bg-church-blue-500/10 ring-2 ring-church-blue-500/50' : 'border-slate-700/50 bg-slate-900/50'}`}
+        className={`border rounded-2xl p-4 md:p-6 shadow-xl overflow-visible transition-colors duration-1000 ${highlightTree ? 'border-church-blue-500/50 bg-church-blue-500/10 ring-2 ring-church-blue-500/50' : 'border-slate-700/50 bg-slate-900/50'}`}
       >
         <HierarchyTree focusTrigger={focusMembersTrigger} />
       </motion.div>

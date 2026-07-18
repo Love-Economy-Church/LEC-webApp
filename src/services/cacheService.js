@@ -3,7 +3,7 @@ const DEFAULT_TTL_MINUTES = 5;
 
 export const CACHE_KEYS = {
     PEOPLE: 'people_data',
-    HIERARCHY: 'hierarchy_data',
+    HIERARCHY: 'hierarchy_data_v3',
     POSITIONS: 'positions_data'
 };
 

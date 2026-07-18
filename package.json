@@ -23,6 +23,7 @@
     "dagre": "^0.8.5",
     "dotenv": "^17.2.3",
     "framer-motion": "^12.29.2",
+    "html2canvas": "^1.4.1",
     "ionicons": "^8.0.13",
     "jspdf": "^4.2.1",
     "lucide-react": "^0.563.0",
