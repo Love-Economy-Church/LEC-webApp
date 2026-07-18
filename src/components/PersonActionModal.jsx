@@ -135,9 +135,9 @@ export default function PersonActionModal({
                                 <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800/60 border border-slate-700/50">
                                     <MapPin size={15} className="text-church-blue-400 shrink-0" />
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Assigned Cell</p>
+                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">ASSIGNED CELL</p>
                                         <p className="text-sm font-bold text-slate-200 truncate">
-                                            {sortedUnits.find(u => u.id === person?.unit_id)?.name || 'Current Cell'}
+                                            {sortedUnits.find(u => u.id === person?.unit_id)?.name || 'CURRENT CELL'}
                                         </p>
                                     </div>
                                     <span className="text-[8px] font-black uppercase tracking-wider text-church-blue-400 bg-church-blue-500/10 border border-church-blue-500/20 px-2 py-0.5 rounded-full shrink-0">Locked</span>
@@ -160,7 +160,7 @@ export default function PersonActionModal({
                             // ── Full edit/add flow: show dropdowns ──
                             <>
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-400 mb-1.5 ml-1">Assigned Unit</label>
+                                    <label className="block text-xs font-bold text-slate-400 mb-1.5 ml-1">ASSIGNED UNIT</label>
                                     <div className="relative group">
                                         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-church-blue-400 transition-colors" size={16} />
                                         <select

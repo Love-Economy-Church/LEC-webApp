@@ -184,12 +184,12 @@ function getRoleLabel(unitType) {
 
 function getChildLabel(unitType) {
   switch (unitType) {
-    case "BRANCH":   return "Churches";
-    case "CHURCH":   return "MCs";
-    case "MC":       return "Buscentas";
-    case "BUSCENTA": return "Cells";
-    case "CELL":     return "Members";
-    default:         return "Units";
+    case "BRANCH":   return "CHURCHES";
+    case "CHURCH":   return "MCS";
+    case "MC":       return "BUSCENTAS";
+    case "BUSCENTA": return "CELLS";
+    case "CELL":     return "MEMBERS";
+    default:         return "UNITS";
   }
 }
 
@@ -403,7 +403,7 @@ function BuscentaRow({ buscenta, isSelected, onSelect, theme }) {
                     {getChildLabel(buscenta.unit_type)} - {sortedChildren.length}
                   </p>
                   {sortedChildren.length === 0 ? (
-                    <p className="text-[9px] text-slate-600 italic text-center py-3">No cells yet</p>
+                    <p className="text-[9px] text-slate-600 italic text-center py-3">NO CELLS YET</p>
                   ) : (
                     // Each cell is now an expandable CellRow accordion
                     <CellRowList cells={sortedChildren} theme={theme} accentColor={accentColor} />
@@ -472,7 +472,7 @@ function CellRow({ cell, theme, accentColor }) {
           >
             <div className="ml-3 mt-1 pb-1 space-y-1">
               {shepherds.length === 0 && members.length === 0 ? (
-                <p className="text-[8px] text-slate-600 italic text-center py-2">No members yet</p>
+                <p className="text-[8px] text-slate-600 italic text-center py-2">NO MEMBERS YET</p>
               ) : (
                 <>
                   {shepherds.map((p, i) => (
@@ -565,7 +565,7 @@ function DrillPanel({ mc, selectedBuscentaId, onBuscentaSelect, scrollRef, theme
         {/* List */}
         <div className="flex-1 overflow-y-auto p-3 space-y-2 no-scrollbar">
           {childrenList.length === 0 ? (
-            <p className="text-[9px] text-slate-600 italic text-center py-8">No {getChildLabel(mc.unit_type).toLowerCase()} yet</p>
+            <p className="text-[9px] text-slate-600 italic text-center py-8">NO {getChildLabel(mc.unit_type)} YET</p>
           ) : (
             childrenList.map((childNode) => (
               <BuscentaRow
@@ -945,8 +945,8 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                           {childCount === 0 && (
                             <p className="text-[9px] text-slate-600 italic text-center py-4">
                               {mc.unit_type === 'CELL'
-                                ? 'No shepherds or members in this cell yet'
-                                : `No ${getChildLabel(mc.unit_type).toLowerCase()} yet`}
+                                ? 'NO SHEPHERDS OR MEMBERS IN THIS CELL YET'
+                                : `NO ${getChildLabel(mc.unit_type)} YET`}
                             </p>
                           )}
 

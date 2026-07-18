@@ -217,11 +217,11 @@ export default function NodeDetailsPanel({ node, onClose, onAddChild, onViewRegi
                                     onClick={() => onAddChild(node)}
                                     className="w-full py-2 px-3 bg-gradient-church hover:opacity-90 text-white rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 border-2 border-church-blue-600"
                                 >
-                                    <Plus size={16} />                                     {unit_type === 'ROOT' ? 'Add Branch' : 
-                                     unit_type === 'BRANCH' ? 'Add Church' : 
-                                     unit_type === 'CHURCH' ? 'Add new MC' : 
-                                     unit_type === 'MC' ? 'Add Buscenta' : 
-                                     unit_type === 'BUSCENTA' ? 'Add Cell' : 'Add Sub-Unit'}
+                                    <Plus size={16} />                                     {unit_type === 'ROOT' ? 'ADD BRANCH' : 
+                                     unit_type === 'BRANCH' ? 'ADD CHURCH' : 
+                                     unit_type === 'CHURCH' ? 'ADD NEW MC' : 
+                                     unit_type === 'MC' ? 'ADD BUSCENTA' : 
+                                     unit_type === 'BUSCENTA' ? 'ADD CELL' : 'ADD SUB-UNIT'}
                                 </button>
                             )}
                         </div>

@@ -350,19 +350,19 @@ export default function ProfilePage() {
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 block pb-2 border-b border-white/[0.05]">System Placement</span>
 
               <div className="flex justify-between items-center py-3 border-b border-white/[0.04]">
-                <span className="text-xs font-bold text-slate-400">Church Email</span>
+                <span className="text-xs font-bold text-slate-400">CHURCH EMAIL</span>
                 <span className="text-sm font-semibold text-slate-200 truncate max-w-[200px]">{userRole?.churchoneEmail || user.email}</span>
               </div>
 
               <div className="flex justify-between items-center py-3 border-b border-white/[0.04]">
-                <span className="text-xs font-bold text-slate-400">Assigned Unit</span>
+                <span className="text-xs font-bold text-slate-400">ASSIGNED UNIT</span>
                 <span className="text-sm font-semibold text-slate-200 truncate max-w-[200px]">{userRole?.unitName || 'Not Assigned'}</span>
               </div>
 
               {/* Personal Email Section */}
               <div className="py-3 border-b border-white/[0.04] space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs font-bold text-slate-400">Personal Email</span>
+                  <span className="text-xs font-bold text-slate-400">PERSONAL EMAIL</span>
                   <span className="text-sm font-semibold text-slate-200 truncate max-w-[200px]">
                     {userRole?.personalEmail || 'Not Linked'}
                   </span>

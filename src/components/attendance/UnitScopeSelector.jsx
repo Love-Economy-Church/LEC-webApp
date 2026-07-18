@@ -129,7 +129,7 @@ export default function UnitScopeSelector({ userRole, onScopeChange }) {
 
     return (
         <div className="space-y-3 mb-6">
-            <h3 className="text-lg font-black text-slate-200">Scope</h3>
+            <h3 className="text-lg font-black text-slate-200">SCOPE</h3>
 
             <div className="space-y-3">
                 {/* BRANCH — hidden for BUSCENTA leaders */}
@@ -148,7 +148,7 @@ export default function UnitScopeSelector({ userRole, onScopeChange }) {
                             disabled={targetBranches.length <= 1}
                             className="w-full bg-[#0b1120] border border-slate-600/60 rounded-2xl pl-12 pr-10 py-4 text-sm font-bold text-slate-200 appearance-none focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
-                            <option value="">-- All Branches --</option>
+                            <option value="">-- ALL BRANCHES --</option>
                             {targetBranches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                         </select>
                         <ChevronRight size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none rotate-90" />
@@ -169,7 +169,7 @@ export default function UnitScopeSelector({ userRole, onScopeChange }) {
                             }}
                             className="w-full bg-[#0b1120] border border-slate-600/60 rounded-2xl pl-12 pr-10 py-4 text-sm font-bold text-slate-200 appearance-none focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500/50 transition-colors"
                         >
-                            <option value="">-- All Churches --</option>
+                            <option value="">-- ALL CHURCHES --</option>
                             {targetChurches.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                         <ChevronRight size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none rotate-90" />
@@ -189,7 +189,7 @@ export default function UnitScopeSelector({ userRole, onScopeChange }) {
                             }}
                             className="w-full bg-[#0b1120] border border-slate-600/60 rounded-2xl pl-12 pr-10 py-4 text-sm font-bold text-slate-200 appearance-none focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500/50 transition-colors"
                         >
-                            <option value="">-- All MCs --</option>
+                            <option value="">-- ALL MCS --</option>
                             {targetMCs.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                         </select>
                         <ChevronRight size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none rotate-90" />
@@ -208,7 +208,7 @@ export default function UnitScopeSelector({ userRole, onScopeChange }) {
                             }}
                             className="w-full bg-[#0b1120] border border-slate-600/60 rounded-2xl pl-12 pr-10 py-4 text-sm font-bold text-slate-200 appearance-none focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500/50 transition-colors"
                         >
-                            <option value="">-- All Buscentas --</option>
+                            <option value="">-- ALL BUSCENTAS --</option>
                             {targetBuscentas.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                         </select>
                         <ChevronRight size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none rotate-90" />
@@ -224,7 +224,7 @@ export default function UnitScopeSelector({ userRole, onScopeChange }) {
                             onChange={(e) => setSelectedCell(e.target.value)}
                             className="w-full bg-[#0b1120] border border-slate-600/60 rounded-2xl pl-12 pr-10 py-4 text-sm font-bold text-slate-200 appearance-none focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500/50 transition-colors"
                         >
-                            <option value="">-- All Cells --</option>
+                            <option value="">-- ALL CELLS --</option>
                             {targetCells.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                         <ChevronRight size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none rotate-90" />

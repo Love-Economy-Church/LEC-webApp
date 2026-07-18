@@ -17,7 +17,7 @@ export default function Login() {
   
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || '/attendance';
+  const from = location.state?.from || { pathname: '/' };
 
   const EMAIL_GATE_ACTIVATION_DATE = "2026-06-25";
   const gateDate = new Date(EMAIL_GATE_ACTIVATION_DATE);
@@ -134,6 +134,12 @@ export default function Login() {
         }
       });
       if (error) throw error;
+      // OAuth replaces React Router state. Preserve the requested in-app route
+      // so the callback can send the member back after Google sign-in.
+      sessionStorage.setItem(
+        'auth_redirect_to',
+        `${from.pathname || '/'}${from.search || ''}${from.hash || ''}`
+      );
       // Browser will navigate to Google — loading stays true until redirect
     } catch (err) {
       console.error('Failed to sign in with Google:', err);
@@ -201,18 +207,22 @@ export default function Login() {
               className="space-y-4"
             >
               {/* Email display */}
-              <div>
-                <label className="block text-sm font-bold uppercase text-gray-400 tracking-wider mb-2">Email Address</label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-black/50 border-2 border-gray-700 text-white px-4 py-3 pl-11 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500 transition-all placeholder:text-gray-500 font-medium"
-                    placeholder="yourname@gmail.com"
-                  />
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-church-blue-400" size={20} />
-                </div>
+              <div className="relative">
+                <input
+                  type="email"
+                  id="unlinked-email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="peer w-full bg-black/50 border-2 border-gray-700 text-white px-4 pt-6 pb-2 pl-11 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500 transition-all placeholder-transparent font-medium"
+                  placeholder="Email Address"
+                />
+                <label 
+                  htmlFor="unlinked-email"
+                  className="absolute left-11 top-2 text-[10px] font-bold uppercase text-church-blue-400 tracking-wider transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-church-blue-400 cursor-text pointer-events-none"
+                >
+                  Email Address
+                </label>
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-church-blue-400 transition-colors" size={20} />
               </div>
 
               {/* Not linked message */}
@@ -237,18 +247,22 @@ export default function Login() {
               className="space-y-4"
             >
               {/* Email display */}
-              <div>
-                <label className="block text-sm font-bold uppercase text-gray-400 tracking-wider mb-2">Email Address</label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-black/50 border-2 border-gray-700 text-white px-4 py-3 pl-11 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500 transition-all placeholder:text-gray-500 font-medium"
-                    placeholder="yourname@gmail.com"
-                  />
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-church-blue-400" size={20} />
-                </div>
+              <div className="relative">
+                <input
+                  type="email"
+                  id="google-email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="peer w-full bg-black/50 border-2 border-gray-700 text-white px-4 pt-6 pb-2 pl-11 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500 transition-all placeholder-transparent font-medium"
+                  placeholder="Email Address"
+                />
+                <label 
+                  htmlFor="google-email"
+                  className="absolute left-11 top-2 text-[10px] font-bold uppercase text-church-blue-400 tracking-wider transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-church-blue-400 cursor-text pointer-events-none"
+                >
+                  Email Address
+                </label>
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-church-blue-400 transition-colors" size={20} />
               </div>
 
               {/* Google-only info banner */}
@@ -287,42 +301,50 @@ export default function Login() {
               transition={{ duration: 0.25 }}
             >
               <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-bold uppercase text-gray-400 tracking-wider mb-2">Email Address</label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-black/50 border-2 border-gray-700 text-white px-4 py-3 pl-11 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500 transition-all placeholder:text-gray-500 font-medium"
-                      placeholder={isGateActive ? "yourname@gmail.com" : "yourname@church.com"}
-                    />
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-church-blue-400" size={20} />
-                  </div>
+                <div className="relative">
+                  <input
+                    type="email"
+                    id="password-mode-email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="peer w-full bg-black/50 border-2 border-gray-700 text-white px-4 pt-6 pb-2 pl-11 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500 transition-all placeholder-transparent font-medium"
+                    placeholder="yourname@example.com"
+                  />
+                  <label 
+                    htmlFor="password-mode-email"
+                    className="absolute left-11 top-2 text-[10px] font-bold uppercase text-church-blue-400 tracking-wider transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-church-blue-400 cursor-text pointer-events-none"
+                  >
+                    Email Address
+                  </label>
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-church-blue-400 transition-colors" size={20} />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-bold uppercase text-gray-400 tracking-wider mb-2">Password</label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full bg-black/50 border-2 border-gray-700 text-white px-4 py-3 pl-11 pr-11 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500 transition-all placeholder:text-gray-500 font-medium"
-                      placeholder="••••••••"
-                    />
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-church-blue-400" size={20} />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-church-blue-400 transition-colors focus:outline-none"
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    id="password-mode-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="peer w-full bg-black/50 border-2 border-gray-700 text-white px-4 pt-6 pb-2 pl-11 pr-11 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-blue-500/50 focus:border-church-blue-500 transition-all placeholder-transparent font-medium"
+                    placeholder="Password"
+                  />
+                  <label 
+                    htmlFor="password-mode-password"
+                    className="absolute left-11 top-2 text-[10px] font-bold uppercase text-church-blue-400 tracking-wider transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-church-blue-400 cursor-text pointer-events-none"
+                  >
+                    Password
+                  </label>
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-church-blue-400 transition-colors" size={20} />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-church-blue-400 transition-colors focus:outline-none"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
 
                 <button

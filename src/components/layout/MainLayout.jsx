@@ -1,23 +1,15 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { NavLink, useLocation, Outlet, useNavigate } from 'react-router-dom'
 import { Home, Users, CheckCircle2, User, MessageCircle, X } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useSwipeNavigation } from '../../hooks/useSwipeNavigation'
+import { AnimatePresence } from 'framer-motion'
 import { useUnreadMessages } from '../../hooks/useUnreadMessages'
 import { useAuth } from '../../contexts/AuthContext'
 import { supabase } from '../../lib/supabase'
 import InstallBanner from '../InstallBanner'
 
-const ROUTES = ['/', '/directory', '/attendance', '/chats', '/profile']
-
 export default function MainLayout() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { onSwipeLeft, onSwipeRight, currentIndex } = useSwipeNavigation()
-  const mainTouchStart = useRef(null)
-  const mainRef = useRef(null)
-  const scrollTimeout = useRef(null)
-  const [isScrolling, setIsScrolling] = useState(false)
   const { unreadCount } = useUnreadMessages()
   const { userRole } = useAuth()
 
@@ -74,24 +66,11 @@ export default function MainLayout() {
     };
   }, [userRole?.personId, location.pathname]);
 
-  const handleScroll = useCallback(() => {
-    setIsScrolling(true)
-    if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
-    scrollTimeout.current = setTimeout(() => setIsScrolling(false), 300)
-  }, [])
-
-  useEffect(() => {
-    const el = mainRef.current
-    if (!el) return
-    el.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      el.removeEventListener('scroll', handleScroll)
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
-    }
-  }, [handleScroll])
-
   return (
-    <div className="h-screen w-screen bg-gradient-dark text-gray-100 font-sans selection:bg-church-blue-400/30 flex flex-col overflow-hidden relative">
+    <div
+      className="h-screen w-screen bg-gradient-dark text-gray-100 font-sans selection:bg-church-blue-400/30 flex flex-col overflow-hidden relative"
+      style={{ '--mobile-nav-height': 'calc(4rem + env(safe-area-inset-bottom, 0px))' }}
+    >
       {/* Shared Decorative Dot Pattern */}
       <div className="absolute inset-0 bg-dot-pattern bg-dot-md text-church-blue-500 opacity-[0.03] pointer-events-none z-0"></div>
       
@@ -134,7 +113,6 @@ export default function MainLayout() {
         {/* Content Area */}
         {/* /mindmap and /chats both need full-bleed: no padding, no scroll wrapper */}
         <main
-          ref={mainRef}
           className={`flex-1 custom-scrollbar touch-pan-y ${
             location.pathname === '/chats' || location.pathname === '/mindmap'
               ? 'overflow-hidden'
@@ -146,14 +124,18 @@ export default function MainLayout() {
               ? 'h-full'
               : 'px-4 md:px-8 py-6 md:py-8 pb-24 md:pb-8'
           }>
-            <Outlet />
+            <React.Suspense fallback={
+              <div className="h-full w-full flex items-center justify-center p-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-church-blue-500"></div>
+              </div>
+            }>
+              <Outlet />
+            </React.Suspense>
           </div>
         </main>
 
         {/* Mobile Bottom Tabs */}
-        <nav className={`md:hidden fixed bottom-0 left-0 z-50 w-full transition-all duration-500 ease-out border-t border-white/5 bg-slate-950/95 backdrop-blur-xl shrink-0 ${
-          isScrolling ? 'opacity-20 translate-y-1 pointer-events-auto' : 'opacity-100 pointer-events-auto translate-y-0'
-        }`}>
+        <nav className="md:hidden relative z-50 w-full min-h-[var(--mobile-nav-height)] border-t border-white/5 bg-slate-950/95 backdrop-blur-xl shrink-0">
           <div className="px-4 py-1.5 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] flex items-center justify-around shadow-2xl">
             <TabItem to="/" icon={<Home size={20} />} label="Home" />
             <TabItem to="/directory" icon={<Users size={20} />} label="Directory" />

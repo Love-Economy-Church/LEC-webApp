@@ -16,20 +16,6 @@ export default function ChatsPage() {
         if (userRole?.personId) markAsRead();
     }, [userRole?.personId, markAsRead]);
 
-    // Auto-open a chat if navigated here with a target user (e.g. from Birthday "Send Wishes")
-    useEffect(() => {
-        if (location.state?.openChatWith) {
-            const target = location.state.openChatWith;
-            handleOpenChat({
-                id: target.id,
-                name: target.full_name,
-                photo: target.photo_url,
-                role: target.position_title || '',
-            });
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.state?.openChatWith?.id]);
-
     const [chats, setChats] = useState([]);
     const [chatsLoading, setChatsLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -117,6 +103,19 @@ export default function ChatsPage() {
             if (!silent) setChatsLoading(false);
         }
     }, [userRole?.personId]);
+
+    // Auto-open a chat if navigated here with a target user (e.g. from Birthday "Send Wishes").
+    useEffect(() => {
+        if (!location.state?.openChatWith) return;
+
+        const target = location.state.openChatWith;
+        handleOpenChat({
+            id: target.id,
+            name: target.full_name,
+            photo: target.photo_url,
+            role: target.position_title || '',
+        });
+    }, [location.state?.openChatWith, handleOpenChat]);
 
     // Send message
     const handleSendMessage = async (e) => {
@@ -218,7 +217,7 @@ export default function ChatsPage() {
     };
 
     return (
-        <div className="fixed inset-0 top-14 md:top-16 bottom-16 md:bottom-0 bg-[#020617] text-gray-100 flex overflow-hidden">
+        <div className="fixed inset-0 top-14 md:top-16 bottom-[var(--mobile-nav-height)] md:bottom-0 bg-[#020617] text-gray-100 flex overflow-hidden">
 
             {/* ── Inbox Sidebar ─────────────────────────────────────────────── */}
             <div className={`flex flex-col w-full md:w-[340px] md:border-r md:border-white/[0.05] shrink-0 ${selectedChatUser ? 'hidden md:flex' : 'flex'}`}>

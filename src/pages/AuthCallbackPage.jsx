@@ -30,7 +30,11 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     if (isLinkMode) return; // handled separately below
 
-    if (!loading && user)  navigate('/attendance', { replace: true });
+    if (!loading && user) {
+      const destination = sessionStorage.getItem('auth_redirect_to') || '/';
+      sessionStorage.removeItem('auth_redirect_to');
+      navigate(destination.startsWith('/') ? destination : '/', { replace: true });
+    }
     if (!loading && !user) navigate('/login',      { replace: true });
   }, [user, loading, isLinkMode, navigate]);
 

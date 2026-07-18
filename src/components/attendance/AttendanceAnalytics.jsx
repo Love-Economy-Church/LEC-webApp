@@ -925,7 +925,7 @@ export default function AttendanceAnalytics({ currentRole, overrideUnitId = null
                   onChange={(e) => setSelectedUnitFilter(e.target.value)}
                   className="w-full appearance-none bg-[#070b13] border border-slate-700/50 hover:border-slate-600/80 focus:border-church-blue-500/50 text-slate-300 text-xs font-black rounded-xl pl-3.5 pr-9 py-3 cursor-pointer focus:outline-none transition-colors"
                 >
-                  <option value="">All Cells</option>
+                  <option value="">ALL CELLS</option>
                   {uniqueUnits.map(unit => (
                     <option key={unit} value={unit}>{unit}</option>
                   ))}
