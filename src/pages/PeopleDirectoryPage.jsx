@@ -117,24 +117,24 @@ export default function PeopleDirectory() {
 
     // Unique Roles for Filter
     const roles = useMemo(() => {
-        const unique = new Set(people.map(p => p.role));
+        const unique = new Set(basePeople.map(p => p.role));
         return ['All', ...Array.from(unique).sort()];
-    }, [people]);
+    }, [basePeople]);
 
     // Status counts for filter tabs
     const statusCounts = useMemo(() => {
-        const counts = { All: people.length, Active: 0, Inactive: 0, Pending: 0 };
-        people.forEach(p => {
+        const counts = { All: basePeople.length, Active: 0, Inactive: 0, Pending: 0 };
+        basePeople.forEach(p => {
             const s = (p.status || 'Active').toLowerCase();
             if (s === 'active') counts.Active++;
             else if (s === 'inactive') counts.Inactive++;
             else if (s === 'pending') counts.Pending++;
         });
         return counts;
-    }, [people]);
+    }, [basePeople]);
 
     const filteredPeople = useMemo(() => {
-        let filtered = people.filter(p => {
+        let filtered = basePeople.filter(p => {
             const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 p.unit.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 (p.membership_state || '').toLowerCase().includes(searchTerm.toLowerCase());
@@ -152,7 +152,7 @@ export default function PeopleDirectory() {
             if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
             return 0;
         });
-    }, [people, searchTerm, filterRole, filterStatus, sortConfig]);
+    }, [basePeople, searchTerm, filterRole, filterStatus, sortConfig]);
 
     const handleSort = (key) => {
         setSortConfig(current => ({
@@ -188,7 +188,6 @@ export default function PeopleDirectory() {
             // Update local state
             const updateStatus = p => p.id === person.id ? { ...p, status: newStatus } : p;
             setPeople(prev => prev.map(updateStatus));
-            setBasePeople(prev => prev.map(updateStatus));
         } catch (err) {
             console.error(`Failed to change status to ${newStatus}:`, err);
             presentToast({
@@ -215,7 +214,6 @@ export default function PeopleDirectory() {
                     status: 'Active'
                 };
                 setPeople(prev => [...prev, added]);
-                setBasePeople(prev => [...prev, added]);
                 if (response.login) {
                     // Show credentials so the admin can give them to the user
                     alert(`Person successfully added!\n\nLogin Email: ${response.login.email}\nPassword: ${response.login.password}\n\nPlease save these credentials!`);
@@ -232,7 +230,6 @@ export default function PeopleDirectory() {
                     unit: units.find(un => un.id === data.unitId)?.name || p.unit
                 } : p;
                 setPeople(prev => prev.map(updateItem));
-                setBasePeople(prev => prev.map(updateItem));
             }
             setIsActionModalOpen(false);
             presentToast({
