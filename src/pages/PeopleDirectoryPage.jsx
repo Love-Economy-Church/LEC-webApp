@@ -103,24 +103,24 @@ export default function PeopleDirectory() {
 
     // Unique Roles for Filter
     const roles = useMemo(() => {
-        const unique = new Set(basePeople.map(p => p.role));
+        const unique = new Set(people.map(p => p.role));
         return ['All', ...Array.from(unique).sort()];
-    }, [basePeople]);
+    }, [people]);
 
     // Status counts for filter tabs
     const statusCounts = useMemo(() => {
-        const counts = { All: basePeople.length, Active: 0, Inactive: 0, Pending: 0 };
-        basePeople.forEach(p => {
+        const counts = { All: people.length, Active: 0, Inactive: 0, Pending: 0 };
+        people.forEach(p => {
             const s = (p.status || 'Active').toLowerCase();
             if (s === 'active') counts.Active++;
             else if (s === 'inactive') counts.Inactive++;
             else if (s === 'pending') counts.Pending++;
         });
         return counts;
-    }, [basePeople]);
+    }, [people]);
 
     const filteredPeople = useMemo(() => {
-        let filtered = basePeople.filter(p => {
+        let filtered = people.filter(p => {
             const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 p.unit.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 (p.membership_state || '').toLowerCase().includes(searchTerm.toLowerCase());
@@ -138,7 +138,7 @@ export default function PeopleDirectory() {
             if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
             return 0;
         });
-    }, [basePeople, searchTerm, filterRole, filterStatus, sortConfig]);
+    }, [people, searchTerm, filterRole, filterStatus, sortConfig]);
 
     const handleSort = (key) => {
         setSortConfig(current => ({
@@ -172,9 +172,9 @@ export default function PeopleDirectory() {
                 await setPendingPerson(person.id);
             }
             // Update local state
-            setPeople(prev => prev.map(p =>
-                p.id === person.id ? { ...p, status: newStatus } : p
-            ));
+            const updateStatus = p => p.id === person.id ? { ...p, status: newStatus } : p;
+            setPeople(prev => prev.map(updateStatus));
+            setBasePeople(prev => prev.map(updateStatus));
         } catch (err) {
             console.error(`Failed to change status to ${newStatus}:`, err);
             alert(`Failed to update status`);
@@ -188,25 +188,32 @@ export default function PeopleDirectory() {
             if (modalMode === 'add') {
                 const response = await createPerson(data);
                 const newPerson = response.person;
-                setPeople(prev => [...prev, {
+                const added = {
                     ...newPerson,
                     name: newPerson.full_name,
                     role: positions.find(p => p.id === data.positionId)?.title || 'Unassigned',
                     unit: units.find(u => u.id === data.unitId)?.name || 'Unassigned',
                     status: 'Active'
-                }]);
+                };
+                setPeople(prev => [...prev, added]);
+                setBasePeople(prev => [...prev, added]);
                 if (response.login) {
                     // Show credentials so the admin can give them to the user
                     alert(`Person successfully added!\n\nLogin Email: ${response.login.email}\nPassword: ${response.login.password}\n\nPlease save these credentials!`);
                 }
             } else {
                 const updated = await updatePerson(selectedPerson.id, data);
-                setPeople(prev => prev.map(p => p.id === selectedPerson.id ? { 
+                // Use the DB response name, but fall back to the form value if the
+                // DB returned null (e.g. silent RLS failure that doesn't throw)
+                const newName = updated?.full_name || data.fullName || selectedPerson.name;
+                const updateItem = p => p.id === selectedPerson.id ? { 
                     ...p, 
-                    name: updated.full_name,
+                    name: newName,
                     role: positions.find(pos => pos.id === data.positionId)?.title || p.role,
                     unit: units.find(un => un.id === data.unitId)?.name || p.unit
-                } : p));
+                } : p;
+                setPeople(prev => prev.map(updateItem));
+                setBasePeople(prev => prev.map(updateItem));
             }
             setIsActionModalOpen(false);
             presentToast({

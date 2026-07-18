@@ -1,196 +1,152 @@
 import { tree, hierarchy } from 'd3-hierarchy';
 import { Position } from 'reactflow';
 
-export const baseStyle = {
-    background: 'rgba(15, 23, 42, 0.65)',
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    color: '#f8fafc',
-    borderTopWidth: '1px',
-    borderRightWidth: '1px',
-    borderBottomWidth: '1px',
-    borderLeftWidth: '1px',
-    borderStyle: 'solid',
-    borderTopColor: 'rgba(255, 255, 255, 0.08)',
-    borderRightColor: 'rgba(255, 255, 255, 0.08)',
-    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
-    borderLeftColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: '16px',
-    padding: '8px 16px',
-    fontSize: '13px',
-    fontWeight: '700',
-    width: 'auto',
-    minWidth: '180px',
-    textAlign: 'center',
-    boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.4)',
-    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+/* ─── Per-type accent colors ──────────────────────────────────────── */
+export const TYPE_ACCENT = {
+    ROOT:     '#94a3b8',
+    BRANCH:   '#eab308',
+    CHURCH:   '#8b5cf6',
+    MC:       '#3b82f6',
+    BUSCENTA: '#ec4899',
+    CELL:     '#f97316',
+    PERSON:   '#10b981',
 };
 
-export const getStyle = (type, isSelected, role) => {
-    let style = { ...baseStyle };
-    if (isSelected) {
-        style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.35), 0 8px 32px -4px rgba(0, 0, 0, 0.6)';
-        style.borderTopColor = 'rgba(59, 130, 246, 0.4)';
-        style.borderRightColor = 'rgba(59, 130, 246, 0.4)';
-        style.borderBottomColor = 'rgba(59, 130, 246, 0.4)';
-        style.borderLeftColor = 'rgba(59, 130, 246, 0.4)';
-        style.transform = 'scale(1.03)';
-        style.zIndex = 100;
-    }
-
-    const isCellShepherd = role?.toLowerCase() === 'cell shepherd';
-
-    switch (type) {
-        case 'BRANCH': return { 
-            ...style, 
-            borderLeftColor: '#eab308', 
-            borderLeftWidth: '4px', 
-            background: isSelected ? 'rgba(234, 179, 8, 0.15)' : style.background 
-        };
-        case 'CHURCH': return { 
-            ...style, 
-            borderLeftColor: '#8b5cf6', 
-            borderLeftWidth: '4px', 
-            background: isSelected ? 'rgba(139, 92, 246, 0.15)' : style.background 
-        };
-        case 'MC': return { 
-            ...style, 
-            borderLeftColor: '#3b82f6', 
-            borderLeftWidth: '4px', 
-            background: isSelected ? 'rgba(59, 130, 246, 0.15)' : style.background 
-        };
-        case 'BUSCENTA': return { 
-            ...style, 
-            borderLeftColor: '#ec4899', 
-            borderLeftWidth: '4px', 
-            background: isSelected ? 'rgba(236, 72, 153, 0.15)' : style.background 
-        };
-        case 'CELL': return { 
-            ...style, 
-            borderLeftColor: '#f97316', 
-            borderLeftWidth: '4px', 
-            background: isSelected ? 'rgba(249, 115, 22, 0.15)' : style.background 
-        };
-        case 'PERSON': {
-            const roleLower = role?.toLowerCase() || '';
-            const isCellShepherd = roleLower.includes('cell shepherd');
-            const isShepherd = roleLower === 'shepherd';
-            if (isCellShepherd) {
-                return {
-                    ...style,
-                    borderLeftColor: '#f59e0b', // Amber/Gold for Cell Shepherd
-                    borderLeftWidth: '4px',
-                    background: isSelected ? 'rgba(245, 158, 11, 0.15)' : style.background
-                };
-            } else if (isShepherd) {
-                return {
-                    ...style,
-                    borderLeftColor: '#8b5cf6', // Violet/Purple for Shepherd
-                    borderLeftWidth: '4px',
-                    background: isSelected ? 'rgba(139, 92, 246, 0.15)' : style.background
-                };
-            } else {
-                return {
-                    ...style,
-                    borderLeftColor: '#10b981', // Emerald for Member
-                    borderLeftWidth: '4px',
-                    background: isSelected ? 'rgba(16, 185, 129, 0.15)' : style.background
-                };
-            }
-        }
-        default: return style;
-    }
+// Node widths & heights used both for layout spacing AND for ReactFlow node sizing
+export const NODE_DIMS = {
+    PERSON: { width: 150, height: 80 },
+    DEFAULT: { width: 220, height: 110 },
 };
 
+export const getStyle = (type, isSelected) => {
+    const accent = TYPE_ACCENT[type] || '#3b82f6';
+    const isPerson = type === 'PERSON';
+    const dims = isPerson ? NODE_DIMS.PERSON : NODE_DIMS.DEFAULT;
+    return {
+        background: 'transparent',
+        border: 'none',
+        padding: 0,
+        borderRadius: 0,
+        width: dims.width,
+        height: dims.height,
+        ...(isSelected ? { filter: `drop-shadow(0 0 16px ${accent}bb)`, zIndex: 100 } : {}),
+    };
+};
+
+/**
+ * layoutTree — STABLE POSITIONS APPROACH
+ *
+ * Positions are computed from the FULL tree (ignoring collapsedIds).
+ * Collapse/expand only toggles node `hidden` + edge `hidden` flags.
+ * This means the canvas never shifts — collapsed children just disappear in place.
+ */
 export const layoutTree = (flatData, collapsedIds, userRole = null) => {
     if (!flatData || flatData.length === 0) return { nodes: [], edges: [] };
 
-    const dataMap = new Map(flatData.map(d => [d.id, { ...d }]));
-    const roots = flatData.filter(d => !d.parent_id || !dataMap.has(d.parent_id));
-
+    const dataMap     = new Map(flatData.map(d => [d.id, { ...d }]));
+    const roots       = flatData.filter(d => !d.parent_id || !dataMap.has(d.parent_id));
     const childrenMap = new Map();
+    const parentMap   = new Map(); // child id → parent id
+
     flatData.forEach(d => {
         if (d.parent_id) {
             if (!childrenMap.has(d.parent_id)) childrenMap.set(d.parent_id, []);
             childrenMap.get(d.parent_id).push(d);
+            parentMap.set(d.id, d.parent_id);
         }
     });
 
-    const nodes = [];
-    const edges = [];
-
-    const buildHierarchy = (parentId) => {
-        const unit = dataMap.get(parentId);
+    /* ── Build FULL hierarchy (no collapsing) ─────────────────────── */
+    const buildFull = (parentId) => {
+        const unit     = dataMap.get(parentId);
         const unitKids = childrenMap.get(parentId) || [];
-        
-        const children = collapsedIds.has(parentId) 
-            ? [] 
-            : unitKids.map(k => buildHierarchy(k.id));
-
-        const result = {
-            id: parentId,
-            ...unit,
-            children
-        };
-        
+        const result   = { id: parentId, ...unit, children: unitKids.map(k => buildFull(k.id)) };
         if (result.children.length === 0) delete result.children;
         return result;
-    }
+    };
 
     if (roots.length === 0) return { nodes: [], edges: [] };
-    
+
     let hierarchyData;
     if (roots.length === 1) {
-        hierarchyData = buildHierarchy(roots[0].id);
+        hierarchyData = buildFull(roots[0].id);
     } else {
         hierarchyData = {
             id: 'synthetic-root',
             name: userRole ? `${userRole.unitName || 'My'} Jurisdiction` : 'Global Church Structure',
             unit_type: 'ROOT',
-            children: roots.map(r => buildHierarchy(r.id))
+            children: roots.map(r => buildFull(r.id)),
         };
         dataMap.set('synthetic-root', { id: 'synthetic-root', name: hierarchyData.name, unit_type: 'ROOT' });
     }
 
+    /* ── Compute positions from full tree (fixed, never changes) ───── */
     const root = hierarchy(hierarchyData);
-
-    // Tightened horizontal sibling layout from 120->80 and vertical depth layout from 420->260
     const treeLayout = tree()
-        .nodeSize([80, 260])
-        .separation((a, b) => (a.parent === b.parent ? 1.1 : 1.3));
-
+        .nodeSize([130, 320])
+        .separation((a, b) => (a.parent === b.parent ? 1.2 : 1.5));
     treeLayout(root);
 
+    /* ── Determine which nodes/edges should be hidden ─────────────── */
+    const isHiddenByCollapse = (nodeId) => {
+        let cursor = parentMap.get(nodeId);
+        while (cursor !== undefined) {
+            if (collapsedIds.has(cursor)) return true;
+            cursor = parentMap.get(cursor);
+        }
+        return false;
+    };
+
+    const nodes = [];
+    const edges = [];
+
     root.descendants().forEach(d => {
+        const isCollapsed = collapsedIds.has(d.data.id);
+        const isHidden    = isHiddenByCollapse(d.data.id);
+        const isPerson    = d.data.unit_type === 'PERSON';
+        const dims        = isPerson ? NODE_DIMS.PERSON : NODE_DIMS.DEFAULT;
+
         nodes.push({
             id: d.data.id,
             type: 'mindMapNode',
-            position: { x: d.y, y: d.x }, 
+            // ReactFlow uses (x,y) as the node's TOP-LEFT corner.
+            // d3-hierarchy gives CENTER coordinates (.y = depth axis, .x = cross axis).
+            position: { x: d.y - dims.width / 2, y: d.x - dims.height / 2 },
+            // Explicit dimensions let ReactFlow do accurate fitView / minimap
+            width:  dims.width,
+            height: dims.height,
+            hidden: isHidden,
             data: {
-                label: d.data.name,
+                label:    d.data.name,
                 unit_type: d.data.unit_type,
-                hasChildren: (childrenMap.get(d.data.id)?.length > 0 || (d.data.members?.length > 0 || d.data.leaders?.length > 0)),
-                isCollapsed: collapsedIds.has(d.data.id),
-                leaders: d.data.leaders,
-                members: d.data.members,
-                photo: d.data.photo, 
-                role: d.data.role,   
-                id: d.data.id,
-                isOwnJurisdiction: userRole && d.data.id === userRole.unitId
+                hasChildren: !!(childrenMap.get(d.data.id)?.length > 0),
+                isCollapsed,
+                leaders:  d.data.leaders,
+                members:  d.data.members,
+                photo:    d.data.photo,
+                role:     d.data.role,
+                id:       d.data.id,
+                isOwnJurisdiction: userRole && d.data.id === userRole.unitId,
             },
             sourcePosition: Position.Right,
             targetPosition: Position.Left,
-            style: getStyle(d.data.unit_type, false, d.data.role)
+            style: getStyle(d.data.unit_type, false),
         });
 
         if (d.parent) {
+            const parentAccent = TYPE_ACCENT[d.parent.data.unit_type] || '#475569';
+            const edgeHidden = isHidden || collapsedIds.has(d.parent.data.id);
             edges.push({
-                id: `e${d.parent.data.id}-${d.data.id}`,
+                id:     `e${d.parent.data.id}-${d.data.id}`,
                 source: d.parent.data.id,
                 target: d.data.id,
-                type: 'default',
-                style: { stroke: '#475569', strokeWidth: 1.5 },
-                animated: false
+                type:   'smoothstep',
+                hidden: edgeHidden,
+                style: {
+                    stroke: `${parentAccent}70`,
+                    strokeWidth: 1.5,
+                },
+                animated: false,
             });
         }
     });

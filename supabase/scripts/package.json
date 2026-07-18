@@ -1,0 +1,15 @@
+{
+    "name": "db-scripts",
+    "version": "1.0.0",
+    "description": "Database maintenance and validation scripts",
+    "type": "module",
+    "scripts": {
+        "validate": "node validate_hierarchy.js",
+        "dump": "node verify_db_state.js"
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^2.39.0",
+        "csv-parse": "^5.5.0",
+        "dotenv": "^16.3.1"
+    }
+}

@@ -1,0 +1,160 @@
+id,full_name,role,parent_id,photo_url,active,is_placeholder
+9920f040-1061-4c25-b8eb-6cad6cd3f5b3,Pastor Gloria Sekyere,,03e6c6af-a128-4315-8bd2-02b100b9d474,https://igoehhjfckmcpcqeediw.supabase.co/storage/v1/object/public/people-photos/aed2781c-2a2a-4c47-9a57-e8df6ec331d9.jpg,true,false
+6ee7acfd-b791-4fff-a720-51e205c19552,Elder Beatrice Djagah,New Testament MC Head,03e6c6af-a128-4315-8bd2-02b100b9d474,https://igoehhjfckmcpcqeediw.supabase.co/storage/v1/object/public/people-photos/6ee7acfd-b791-4fff-a720-51e205c19552.jpg,true,false
+4b019a2a-4870-44e8-b6a6-04291e429b58,Eugene Yaw Britwum,Media SM Head,03e6c6af-a128-4315-8bd2-02b100b9d474,https://igoehhjfckmcpcqeediw.supabase.co/storage/v1/object/public/people-photos/4b019a2a-4870-44e8-b6a6-04291e429b58.JPG,true,false
+aed2781c-2a2a-4c47-9a57-e8df6ec331d9,Elder Beverly Mensah,Agape MC Head,03e6c6af-a128-4315-8bd2-02b100b9d474,https://igoehhjfckmcpcqeediw.supabase.co/storage/v1/object/public/people-photos/aed2781c-2a2a-4c47-9a57-e8df6ec331d9.jpg,true,false
+124cb6e5-a42c-4575-91f1-07c42400b9d7,Pastor Albright Kankam,Dunamis MC Head,03e6c6af-a128-4315-8bd2-02b100b9d474,https://igoehhjfckmcpcqeediw.supabase.co/storage/v1/object/public/people-photos/124cb6e5-a42c-4575-91f1-07c42400b9d7.jpg,true,false
+443c44a7-03f1-4d33-a41b-64cd755e9992,Marcellina Seshie,JB1 Cell Shepherd 01,0ecced05-bf28-403a-b657-137ca8c46a68,,true,false
+46a7be1b-614b-40c6-8fa8-3bf6d8ba4e7e,Prince Djangmah,JB1 Cell Shepherd 03,0ecced05-bf28-403a-b657-137ca8c46a68,,true,false
+d6a58d06-ae3c-4626-bc6c-de6dad6892a3,Josephine Apexi,JB1 Cell Shepherd 02,0ecced05-bf28-403a-b657-137ca8c46a68,,true,false
+0239abe8-c667-457e-914b-28346136a40e,Samuel Annor,Member of KB2 Cell 02,104d9e7d-6da9-414a-8786-1219a9095626,,true,false
+8ec4228d-bf54-41ca-9cee-ced8d4a0b927,Hayford Opoku,Member of KB2 Cell 02,104d9e7d-6da9-414a-8786-1219a9095626,,true,false
+cd03fcbe-e50c-4c96-95f5-bf982db7ee41,Stella,Member of KB2 Cell 02,104d9e7d-6da9-414a-8786-1219a9095626,,true,false
+f4115992-f939-4985-804e-0d392a014593,Degraft,Member of KB2 Cell 02,104d9e7d-6da9-414a-8786-1219a9095626,,true,false
+509c1977-298b-4dab-9302-b034aca62268,Philemon,Member of KB2 Cell 02,104d9e7d-6da9-414a-8786-1219a9095626,,true,false
+72fe0d52-f755-42ff-aea7-b8dd0df58bf4,Isaac,Member of KB2 Cell 02,104d9e7d-6da9-414a-8786-1219a9095626,,true,false
+81b6d76a-9b47-4945-83b1-3a40704067c8,Angel Osei,KB2 Cell 02 Shepherd,104d9e7d-6da9-414a-8786-1219a9095626,,true,false
+fa0b3e2d-2b2a-40d8-ab9a-c696485f00d0,Emmanuel Boakye,KB2 Cell 02 Shepherd,104d9e7d-6da9-414a-8786-1219a9095626,,true,false
+9dbeee81-de63-4454-adca-c55ec45fef1d,Pending Identity,FBB Cell 04 Shepherd,1181ee33-10d6-4847-96e8-7430d6ac007e,,true,true
+dccd2745-5604-40ea-8c74-22cdc2ca23ad,Princess Ama Gyekye,Grace Buscenta Head,124cb6e5-a42c-4575-91f1-07c42400b9d7,,true,false
+9b87c8c4-4c50-461a-8c24-e66d87035c35,Kelvin Armah,Fruit Bearers Buscenta Head,124cb6e5-a42c-4575-91f1-07c42400b9d7,,true,false
+cc978906-f9ed-450e-9c84-a78e945960e7,Isaac Nuamah,Kharis Buscenta Head,124cb6e5-a42c-4575-91f1-07c42400b9d7,,true,false
+104d9e7d-6da9-414a-8786-1219a9095626,Jesse Asanab,KB2 Cell Shepherd 02,1a593388-842b-4db3-9510-4117966d4312,,true,false
+f2c00834-8323-4d91-b265-8c8d57f091c2,Samuel William Dodoo,KB2 Cell Shepherd 01,1a593388-842b-4db3-9510-4117966d4312,,true,false
+cf01cf31-477f-4e5f-af3a-b2f89fd90b6f,Edwin Aveh,KB2 Cell Shepherd 03,1a593388-842b-4db3-9510-4117966d4312,,true,false
+66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,Beatrice Darkoa Baah,KB2 Cell Shepherd 04,1a593388-842b-4db3-9510-4117966d4312,,true,false
+4d23c227-69af-4cc0-a6ae-ff0e361444ee,Jeremiah Cofie,KB2 Cell Shepherd 05,1a593388-842b-4db3-9510-4117966d4312,,true,false
+9fc9c679-fba5-400c-8dbb-8daf1ba77118,NBB Cell 1,Cell,20d3a3a6-da0c-4832-9d40-b8c39ecc3070,,true,true
+40046068-5f0c-4ca4-9dc5-17593a8f7126,NBB Cell 2,Cell,20d3a3a6-da0c-4832-9d40-b8c39ecc3070,,true,true
+4fe517da-b97f-46c3-b2a2-cac702f452b9,Pending Identity,KB Cell 04 Shepherd,8917bd80-1983-4f7c-8e8f-27a4bb2fe958,,true,true
+7ab0aadc-5828-47a2-9768-e97cb0777346,Pending Identity,NCB Cell 02 Shepherd,272e3a1f-cb1f-4aa5-b52e-8b9679ef375e,,true,true
+781899ce-24ef-4df9-93e0-0135e4398281,Prince Aboagye,NCB Cell 02 Shepherd,272e3a1f-cb1f-4aa5-b52e-8b9679ef375e,,true,false
+fb24b74a-fd44-4ed1-a05f-f6a85aa86200,Pending Identity,KB Cell 01 Shepherd,3ddcc2c1-26a6-43d1-8f1f-b62c81f861c4,,true,true
+deb464a5-474a-43a0-bd3a-98a2d782a0d7,Pending Identity,GB Cell 03 Shepherd,3f5ab0c9-c7af-4cb9-ad27-2c62cf5f7fcf,,true,true
+5a85e6b3-99c4-43ca-9183-935e18c71dc5,Sarah York,NBB Cell Shepherd 02,40046068-5f0c-4ca4-9dc5-17593a8f7126,,true,false
+d47db766-7dff-409e-8872-794821255f49,Charity,NBB Cell 01 Shepherd,43e8b6f5-5976-4227-bb62-65dcb8e30c52,,true,false
+5ab39d7d-36a6-4812-aac7-bc5b1053851a,Pending Identity,NBB Cell 01 Shepherd,43e8b6f5-5976-4227-bb62-65dcb8e30c52,,true,true
+cf2e2971-22b9-487f-a1c5-0de6e82e927e,Pending Identity,JB1 Cell 01 Shepherd,443c44a7-03f1-4d33-a41b-64cd755e9992,,true,true
+7c0a3204-ad89-4ce1-b1ca-5c18a1daf4b4,⁠Prince Smith,JB1 Cell 01 Shepherd,443c44a7-03f1-4d33-a41b-64cd755e9992,,true,false
+126eb274-1136-43d9-bb62-cb9e9991d251,Pending Identity,NCB Cell 03 Shepherd,452e08f6-8c10-4d3b-9f5c-9ccda74972cb,,true,true
+b750f9f0-2ab5-49df-9bc7-49f344bfd0dd,Epaphrase,NCB Cell Shepherd 01,4573d516-c2cc-4271-80e7-d3796fb78862,,true,false
+b2318ca4-79f9-4df1-903c-2815dbe89f3a,Clifford Ansu,JB1 Cell 03 Shepherd,46a7be1b-614b-40c6-8fa8-3bf6d8ba4e7e,,true,false
+bcdc27aa-c759-4a12-88b0-8f9571560c1b,Pending Identity,JB1 Cell 03 Shepherd,46a7be1b-614b-40c6-8fa8-3bf6d8ba4e7e,,true,true
+8771c058-f853-4863-96a7-9d6f82bc6e7b,Veronica Oppong,Kharis Buscenta Head,4b019a2a-4870-44e8-b6a6-04291e429b58,https://igoehhjfckmcpcqeediw.supabase.co/storage/v1/object/public/people-photos/8771c058-f853-4863-96a7-9d6f82bc6e7b.JPG,true,false
+02ee2603-e109-44bf-b080-c090bc66f76f,Nydia-Ann Ansabea Richardson,KB2 Cell 05 Shepherd,4d23c227-69af-4cc0-a6ae-ff0e361444ee,,true,false
+ab57eab8-9451-4947-b4fb-037b5315ffed,Joshua Boyefio,KB2 Cell 05 Shepherd,4d23c227-69af-4cc0-a6ae-ff0e361444ee,,true,false
+58beca34-931d-4f44-b032-53bd677fbb72,Kingsley Atsutse,KB1 Cell Shepherd 01,54db750a-0247-4a21-ad6d-23c75799f299,,true,false
+c1920ece-925f-4fca-af69-957484595e96,Sylvester Tonah-Peter,KB1 Cell Shepherd 03,54db750a-0247-4a21-ad6d-23c75799f299,,true,false
+e1512952-e2bf-49cd-9a07-7f1dfed65f59,Vivian Okoroji Adanna,KB1 Cell Shepherd 04,54db750a-0247-4a21-ad6d-23c75799f299,,true,false
+5e743331-2eb7-44e5-95ae-47c22778f41e,Nuhu Kofi Essuman,KB1 Cell Shepherd 02,54db750a-0247-4a21-ad6d-23c75799f299,,true,false
+556b97f0-af9c-42bd-87a2-0e0c5143911e,Eric Appah,KB1 Cell 01 Shepherd,58beca34-931d-4f44-b032-53bd677fbb72,,true,false
+f5122904-f4c4-4324-80b9-3e61c80ad7cb,Princess Serwaa Marfo,KB1 Cell 01 Shepherd,58beca34-931d-4f44-b032-53bd677fbb72,,true,false
+20f93c22-0336-4457-8028-65e221ca356f,Kaleb Asamoah Boateng,Member of KB1 Cell 01,58beca34-931d-4f44-b032-53bd677fbb72,,true,false
+7a47b7c3-4175-4318-852e-f920e99e5b52,Evans Owusu,Member of KB1 Cell 01,58beca34-931d-4f44-b032-53bd677fbb72,,true,false
+5bdd99cb-866d-4d60-ad06-254f0a87a86e,Samuel Annor,Member of KB1 Cell 01,58beca34-931d-4f44-b032-53bd677fbb72,,true,false
+f01900f3-04be-4f57-a19f-ebdad79e4aa9,Christabel Arthur,Member of KB1 Cell 01,58beca34-931d-4f44-b032-53bd677fbb72,,true,false
+c53b08b6-f8e9-434d-bc43-b89ec2922155,Georgette Baffour Awuah,KB1 Cell 01 Shepherd,58beca34-931d-4f44-b032-53bd677fbb72,,true,false
+ed368eaf-123d-4e7a-83f3-8408550da8f5,Pending Identity,GB Cell 04 Shepherd,58df3e1f-4e47-48b5-a6eb-68409f55e3ab,,true,true
+dabe8f46-8301-4243-850e-6cdb1b186e31,Emmanuel Twene Junior,NBB Cell 02 Shepherd,5a85e6b3-99c4-43ca-9183-935e18c71dc5,,true,false
+1c9b340d-2499-4d80-9523-549966fa815f,Pending Identity,NBB Cell 02 Shepherd,5a85e6b3-99c4-43ca-9183-935e18c71dc5,,true,true
+05d10ab1-3df2-4a76-ab9f-91b5b2f4d0c5,Anita Atiapah,KB1 Cell 02 Shepherd,5e743331-2eb7-44e5-95ae-47c22778f41e,,true,false
+8f8a84fa-e085-4f99-bdbd-1c9ddac6a729,Papa Yaw,Member of KB1 Cell 02,5e743331-2eb7-44e5-95ae-47c22778f41e,,true,false
+cdd5a250-4b9d-4f6a-bf37-60ef9e27589d,Delali Gamor,Member of KB1 Cell 02,5e743331-2eb7-44e5-95ae-47c22778f41e,,true,false
+cca37564-40fb-4432-98c3-7ae64988e0cd,Ivan Neequaye,Member of KB1 Cell 02,5e743331-2eb7-44e5-95ae-47c22778f41e,,true,false
+4d34005b-4c79-49fe-86e5-504c723bbadb,Oscar Ba-uu,Member of KB1 Cell 02,5e743331-2eb7-44e5-95ae-47c22778f41e,,true,false
+69d23938-eee9-4c9d-9b0d-9b5c9915455e,Michael Obi,Member of KB1 Cell 02,5e743331-2eb7-44e5-95ae-47c22778f41e,,true,false
+7aa3e322-7b8e-4ed0-8438-a3bf4a27056c,Elizabeth Owusu,KB1 Cell 02 Shepherd,5e743331-2eb7-44e5-95ae-47c22778f41e,,true,false
+830fbd19-f5a9-4187-bf77-95e73931d4dd,Pending Identity,KB Cell 02 Shepherd,6556392c-11c0-4e5e-b89d-623e4e7900d1,,true,true
+90f885f5-e362-4f70-be08-ab80dad0ae3e,Silas Asamoah Frimpong,Member of KB2 Cell 04,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+ea3cdc16-0aac-433d-8bf0-284f45ff7f52,Maria Elsie Dodoo,Member of KB2 Cell 04,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+e5bf2cc7-c240-4d77-b80a-5148829a14c5,Nana Akwesi Owusu-Sekyere,Member of KB2 Cell 04,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+4cf9ff95-b277-4f01-af06-f28f61753585,Joseph Amoah,Member of KB2 Cell 04,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+41656fa9-fd49-4b4d-94c2-a366a6d74f18,Elikplim Adonoo,KB2 Cell 04 Shepherd,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+eeda406d-a061-4ce3-9b84-8c6fdeba5305,Aseda Maame Yaa Serwaa Addo,KB2 Cell 04 Shepherd,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+2940516b-dcb5-4394-a715-69a2782de0f4,Aseda Asempa,Member of KB2 Cell 04,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+15a7bd55-5d50-4f04-8c08-2ee9bd091333,Ransford Omari,Member of KB2 Cell 04,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+f678b2d2-d4b6-4cd0-bab1-d9a25c1f800a,Raymond Tetteh,Member of KB2 Cell 04,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+f4c21126-38a0-44ad-9604-b61f251e915d,Nhyira George,Member of KB2 Cell 04,66e4db95-eeaf-43e5-9cbf-e2df8be8e8a3,,true,false
+a157b3d1-dafb-4b81-ab40-35fed316439a,Pending Identity,FBB Cell 01 Shepherd,6e8af56f-4bad-4f43-8ec1-e51e9ad05227,,true,true
+1a593388-842b-4db3-9510-4117966d4312,Edh Obiri Yeboah,Kharis Buscenta 2 Head,6ee7acfd-b791-4fff-a720-51e205c19552,,true,false
+54db750a-0247-4a21-ad6d-23c75799f299,Flora Otoo,Kharis Buscenta 1 Head,6ee7acfd-b791-4fff-a720-51e205c19552,,true,false
+456c653e-5d94-4c2c-bccd-cae62fc2588d,Pending Identity,GB Cell 02 Shepherd,729d71d9-99e8-4a9a-aaf1-17b145ab5692,,true,true
+272e3a1f-cb1f-4aa5-b52e-8b9679ef375e,Sylvester Tonah Peter,NCB Cell Shepherd 02,7376eccc-bfbf-4ff0-8e0c-98a167f6b9e2,,true,false
+452e08f6-8c10-4d3b-9f5c-9ccda74972cb,Isaac Bechie,NCB Cell Shepherd 03,787b03b7-f07c-4ffb-9b56-388fe6d5c181,,true,false
+fbcf0d69-3e76-46cd-9020-d9252fc1d403,Harry Opare,JB2 Cell 02 Shepherd,832e4f1c-9ec7-48e7-bb68-206584f54cb9,,false,true
+af3aff74-392f-46d1-866f-49c88879ce3f,Nii Adjiri Parker,JB2 Cell 02 Shepherd,832e4f1c-9ec7-48e7-bb68-206584f54cb9,,true,false
+d6622b3a-6203-4ca0-8099-f4ae63a35566,Pending Identity,KB Cell Shepherd 03,8771c058-f853-4863-96a7-9d6f82bc6e7b,,true,true
+6556392c-11c0-4e5e-b89d-623e4e7900d1,Pending Identity,KB Cell Shepherd 02,8771c058-f853-4863-96a7-9d6f82bc6e7b,,true,true
+8917bd80-1983-4f7c-8e8f-27a4bb2fe958,Pending Identity,KB Cell Shepherd 04,8771c058-f853-4863-96a7-9d6f82bc6e7b,,true,true
+3ddcc2c1-26a6-43d1-8f1f-b62c81f861c4,Pending Identity,KB Cell Shepherd 01,8771c058-f853-4863-96a7-9d6f82bc6e7b,,true,true
+6cd663b1-3416-42ca-b022-6126bd329ee7,Pending Identity,JB2 Cell 01 Shepherd,90720881-b047-4be1-8598-15147352e654,,true,true
+ec67b449-8239-480f-8be9-c04bdd44e67d,Pending Identity,FBB Cell Shepherd 02,9b87c8c4-4c50-461a-8c24-e66d87035c35,,true,true
+6e8af56f-4bad-4f43-8ec1-e51e9ad05227,Pending Identity,FBB Cell Shepherd 01,9b87c8c4-4c50-461a-8c24-e66d87035c35,,true,true
+c8a693fd-d345-457a-bd64-00a132f1356a,Pending Identity,FBB Cell Shepherd 03,9b87c8c4-4c50-461a-8c24-e66d87035c35,,true,true
+1181ee33-10d6-4847-96e8-7430d6ac007e,Pending Identity,FBB Cell Shepherd 04,9b87c8c4-4c50-461a-8c24-e66d87035c35,,true,true
+1ea2b617-204e-4742-ae19-a29a09555b23,Kimberly E. Chimdi,JB2 Cell 03 Shepherd,9c0b9d43-cb88-409e-9f95-742de1139ac6,,true,false
+2a393cf5-2150-478a-a978-fcd3769fff93,Shammah Achufusi,JB2 Cell 03 Shepherd,9c0b9d43-cb88-409e-9f95-742de1139ac6,,true,false
+a16569bd-8318-47b3-915e-724f1769cf11,Charine Simons,JB2 Cell 03 Shepherd,9c0b9d43-cb88-409e-9f95-742de1139ac6,,true,false
+43e8b6f5-5976-4227-bb62-65dcb8e30c52,Joshua Vondee,NBB Cell Shepherd 01,9fc9c679-fba5-400c-8dbb-8daf1ba77118,,true,false
+0ecced05-bf28-403a-b657-137ca8c46a68,Caleb Yorke,Joy Buscenta 1 Head,aed2781c-2a2a-4c47-9a57-e8df6ec331d9,,true,false
+dbcdd995-7097-44cb-a246-9a25de9c2b45,Regina Amedagbui,Joy Buscenta 2 Head,aed2781c-2a2a-4c47-9a57-e8df6ec331d9,,true,false
+343c7057-998d-4ff2-b307-63866bb12d58,Pending Identity,NCB Cell 01 Shepherd,b750f9f0-2ab5-49df-9bc7-49f344bfd0dd,,true,true
+77c53fd7-e037-491a-9be2-74c22262141e,Lucy,NCB Cell 01 Shepherd,b750f9f0-2ab5-49df-9bc7-49f344bfd0dd,,true,false
+d5809fa2-4859-47ce-a2ec-8d4a80fa6bdd,Agnes Owusu,Member of KB1 Cell 04,c1920ece-925f-4fca-af69-957484595e96,,true,false
+72113bf3-0779-4779-b3b3-e84c47029547,Angela Adoma,Member of KB1 Cell 03,c1920ece-925f-4fca-af69-957484595e96,,true,false
+a5d5c0a2-6e73-4136-8fbe-055bca78311b,Joseph,Member of KB1 Cell 03,c1920ece-925f-4fca-af69-957484595e96,,true,false
+57c37652-6767-431a-bd92-9d0fdf14b45a,Sarah Yorke,KB1 Cell 03 Shepherd,c1920ece-925f-4fca-af69-957484595e96,,false,false
+a61ccb61-cc10-4ba0-a84a-41870d91d744,Barbara Adoma,Member of KB1 Cell 03,c1920ece-925f-4fca-af69-957484595e96,,true,false
+de98c00f-218e-4a5e-970d-5a9ac86c1f6c,Enoch,Member of KB1 Cell 03,c1920ece-925f-4fca-af69-957484595e96,,true,false
+ed651ee4-a95b-4d8e-af25-dcea00228d3a,Alexander,Member of KB1 Cell 04,c1920ece-925f-4fca-af69-957484595e96,,true,false
+3514432c-e5d7-4526-a8ad-02adad313206,Bernard Prince,Member of KB1 Cell 04,c1920ece-925f-4fca-af69-957484595e96,,true,false
+e4e85130-3af9-42cc-b934-0ad1e9b9325b,Jermaine Karikari,Member of KB1 Cell 04,c1920ece-925f-4fca-af69-957484595e96,,true,false
+c204d68d-374f-4879-8bee-d7c097679553,Kofi Annor,Member of KB1 Cell 04,c1920ece-925f-4fca-af69-957484595e96,,true,false
+3773bafd-f688-4fa1-9f79-d79e2c3cf942,Joshua Asamani,Member of KB1 Cell 04,c1920ece-925f-4fca-af69-957484595e96,,true,false
+216c1d32-6d00-49c1-b966-a58bae366a13,Prince,Member of KB1 Cell 03,c1920ece-925f-4fca-af69-957484595e96,,true,false
+9ab090dc-c30a-4848-a24d-9cc7fc4a2bd0,Emmnauel,KB1 Cell 03 Shepherd,c1920ece-925f-4fca-af69-957484595e96,,true,false
+7979dd2b-c382-4cd8-ac5e-f7046ea24cd1,Frimpong Charles,Member of KB1 Cell 03,c1920ece-925f-4fca-af69-957484595e96,,true,false
+01db62d6-f257-4995-8049-35eda41f8f24,Pending Identity,FBB Cell 03 Shepherd,c8a693fd-d345-457a-bd64-00a132f1356a,,true,true
+50aec67d-aac1-4d91-95a3-6c257f2319bd,Richmond Gyasi,Member of KB2 Cell 05,4d23c227-69af-4cc0-a6ae-ff0e361444ee,,true,false
+406b2d1f-789e-4a6f-9969-2cc4595d8d06,Reginald Mensa,Member of KB2 Cell 05,4d23c227-69af-4cc0-a6ae-ff0e361444ee,,true,false
+aba97b21-1c24-4420-baaa-ba262cd40f19,Isaac Yevu,Member of KB2 Cell 05,4d23c227-69af-4cc0-a6ae-ff0e361444ee,,true,false
+4fbb5110-dfdf-4a0d-a530-79f6036e9704,Pending Identity,GB Cell 01 Shepherd,cdee63e0-c0b0-4106-a6c3-48f2754f85c9,,true,true
+0548d4c0-7a44-4418-a8b7-fb49cb4fa15a,David,Member of KB2 Cell 03,cf01cf31-477f-4e5f-af3a-b2f89fd90b6f,,true,false
+38af19e1-264c-4e90-b7c8-e36b064ecc21,Kobby Obeng,Member of KB2 Cell 03,cf01cf31-477f-4e5f-af3a-b2f89fd90b6f,,true,false
+d7e65e8e-7df0-4aff-b7e1-de20052dbf4b,Israel,Member of KB2 Cell 03,cf01cf31-477f-4e5f-af3a-b2f89fd90b6f,,true,false
+90b75c71-1c43-4f0c-ad55-840fea2045a7,Godfred,Member of KB2 Cell 03,cf01cf31-477f-4e5f-af3a-b2f89fd90b6f,,true,false
+64a814e8-248e-4c22-838c-f26d33791dca,Fred,Member of KB2 Cell 03,cf01cf31-477f-4e5f-af3a-b2f89fd90b6f,,true,false
+b6fe5d52-cf47-42a0-946b-e279ef47e5c1,Afryie Eno Adiepena,KB2 Cell 03 Shepherd,cf01cf31-477f-4e5f-af3a-b2f89fd90b6f,,true,false
+3c05da2b-a468-464c-9b96-3a314df64bdc,Derrick Edem,Member of KB2 Cell 03,cf01cf31-477f-4e5f-af3a-b2f89fd90b6f,,true,false
+90aa0142-f389-4371-83d1-e948ee4312f1,Pending Identity,KB Cell 03 Shepherd,d6622b3a-6203-4ca0-8099-f4ae63a35566,,true,true
+8d3ddb46-8c9a-4e82-9117-5181f51af976,Pending Identity,JB1 Cell 02 Shepherd,d6a58d06-ae3c-4626-bc6c-de6dad6892a3,,true,true
+da3a2600-8458-49e9-ac41-c8eab5ef4087,Hope Ekpe,JB1 Cell 02 Shepherd,d6a58d06-ae3c-4626-bc6c-de6dad6892a3,,true,false
+832e4f1c-9ec7-48e7-bb68-206584f54cb9,Emmanuella Ayerh,JB2 Cell Shepherd 02,dbcdd995-7097-44cb-a246-9a25de9c2b45,,true,false
+9c0b9d43-cb88-409e-9f95-742de1139ac6,Stanley Addy,JB2 Cell Shepherd 03,dbcdd995-7097-44cb-a246-9a25de9c2b45,,true,false
+90720881-b047-4be1-8598-15147352e654,Matilda Buah,JB2 Cell Shepherd 01,dbcdd995-7097-44cb-a246-9a25de9c2b45,,true,false
+729d71d9-99e8-4a9a-aaf1-17b145ab5692,Pending Identity,GB Cell Shepherd 02,dccd2745-5604-40ea-8c74-22cdc2ca23ad,,true,true
+3f5ab0c9-c7af-4cb9-ad27-2c62cf5f7fcf,Pending Identity,GB Cell Shepherd 03,dccd2745-5604-40ea-8c74-22cdc2ca23ad,,true,true
+58df3e1f-4e47-48b5-a6eb-68409f55e3ab,Pending Identity,GB Cell Shepherd 04,dccd2745-5604-40ea-8c74-22cdc2ca23ad,,true,true
+cdee63e0-c0b0-4106-a6c3-48f2754f85c9,Pending Identity,GB Cell Shepherd 01,dccd2745-5604-40ea-8c74-22cdc2ca23ad,,true,true
+a38fc8f6-3c88-4879-b49c-29cfdfa31989,Margaret Owusu,KB1 Cell 04 Shepherd,e1512952-e2bf-49cd-9a07-7f1dfed65f59,,true,false
+33239f4e-9b1e-4279-9a33-1d7a7de6f176,Caleb Adjei Asante,KB1 Cell 04 Shepherd,e1512952-e2bf-49cd-9a07-7f1dfed65f59,,true,false
+8df1c054-f2fc-4e6e-858a-c2197c722f67,Pending Identity,FBB Cell 02 Shepherd,ec67b449-8239-480f-8be9-c04bdd44e67d,,true,true
+20d3a3a6-da0c-4832-9d40-b8c39ecc3070,New Breed Buscenta,Buscenta 1,eeae3d5a-087a-4635-b084-47cd7fc6b8f4,,true,true
+fd275d76-10f7-46dd-ad3c-004f58336373,New Creation Buscenta,Buscenta 2,eeae3d5a-087a-4635-b084-47cd7fc6b8f4,,true,true
+670cfb00-c794-4103-90bc-4362b00f1e7c,Peter Kekeli Dotse,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+6c181184-65c6-4b2d-8814-d72dd0c7fd35,Kelvin Boakye,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+58881eba-416b-4e47-86b1-d6930a4ab770,Christabel Larbi,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+9007d4d7-fb8f-4a01-91bd-4f2cf7236f99,Priscilla Kissiwaa Amponsah,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+372e0fea-6236-4eee-ab92-08f5a56536ec,Eyram Agboli,KB2 Cell 01 Shepherd,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+874717a5-93e0-4bf4-a2ee-cf89a15e3625,Sarah Acquah,KB2 Cell 01 Shepherd,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+60d43310-34eb-444e-beb5-f765f6d72769,Yvette Dovlo,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+bcc5e5da-5339-474b-942a-d00f1424076e,Noelle Ewurasi Sika Antwi,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+42a01bab-bddc-41e9-9e64-f342785c2d73,Nana Kwadwo Adu Bempong,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+381e20b7-6f06-4f70-be14-475024fb7e1a,Pascal Adjei,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+5c832475-4625-45ce-ad21-baddd8fb0df6,Ewurabena Mensah,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+15d5df65-fb00-48c1-a96b-983a082beae9,Kwabena Ofosu,Member of KB2 Cell 01,f2c00834-8323-4d91-b265-8c8d57f091c2,,true,false
+4573d516-c2cc-4271-80e7-d3796fb78862,NCB Cell 1,Cell,fd275d76-10f7-46dd-ad3c-004f58336373,,true,true
+7376eccc-bfbf-4ff0-8e0c-98a167f6b9e2,NCB Cell 2,Cell,fd275d76-10f7-46dd-ad3c-004f58336373,,true,true
+787b03b7-f07c-4ffb-9b56-388fe6d5c181,NCB Cell 3,Cell,fd275d76-10f7-46dd-ad3c-004f58336373,,true,true
+03e6c6af-a128-4315-8bd2-02b100b9d474,Rev. Giorgio Mensah,Zonal Head,,https://igoehhjfckmcpcqeediw.supabase.co/storage/v1/object/public/people-photos/03e6c6af-a128-4315-8bd2-02b100b9d474.jpg,true,false
+eeae3d5a-087a-4635-b084-47cd7fc6b8f4,Soul Winners MC,MC,,,true,true

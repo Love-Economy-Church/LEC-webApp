@@ -173,30 +173,6 @@ export default function MemberProfilePage() {
         })();
     }, [personId]);
 
-    // ── tab data loading ──────────────────────────────────────────────────────
-    useEffect(() => {
-        if (!person) return;
-        if (activeTab === 'analytics') fetchAttendance();
-        else if (activeTab === 'unit')  fetchUnitStats();
-        else if (activeTab === 'chat')  fetchMessages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab, person?.id]);
-
-    // real-time chat
-    useEffect(() => {
-        if (activeTab !== 'chat' || !userRole?.personId || !person?.id) return;
-        const ch = supabase
-            .channel(`member-page-chat-${person.id}-${userRole.personId}`)
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'private_messages' }, ({ new: m }) => {
-                if (
-                    (m.sender_id === userRole.personId && m.recipient_id === person.id) ||
-                    (m.sender_id === person.id && m.recipient_id === userRole.personId)
-                ) setMessages(prev => prev.some(x => x.id === m.id) ? prev : [...prev, m]);
-            })
-            .subscribe();
-        return () => supabase.removeChannel(ch);
-    }, [activeTab, person?.id, userRole?.personId]);
-
     // scroll chat
     useEffect(() => {
         if (activeTab === 'chat') chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -240,11 +216,17 @@ export default function MemberProfilePage() {
         if (!userRole?.personId || !person?.id) return;
         setChatLoading(true);
         try {
-            const { data } = await supabase
+            const { data, error } = await supabase
                 .from('private_messages').select('*')
                 .or(`and(sender_id.eq.${userRole.personId},recipient_id.eq.${person.id}),and(sender_id.eq.${person.id},recipient_id.eq.${userRole.personId})`)
                 .order('created_at', { ascending: true });
-            setMessages(data || []);
+            if (error) {
+                console.error("Error fetching messages:", error);
+            } else {
+                setMessages(data || []);
+            }
+        } catch (err) {
+            console.error("Exception fetching messages:", err);
         } finally { setChatLoading(false); }
     }, [userRole?.personId, person?.id]);
 
@@ -255,12 +237,52 @@ export default function MemberProfilePage() {
         setChatInput('');
         setChatSending(true);
         try {
-            const { data } = await supabase.from('private_messages')
+            const { data, error } = await supabase.from('private_messages')
                 .insert([{ sender_id: userRole.personId, recipient_id: person.id, message: text }])
                 .select().single();
-            if (data) setMessages(prev => [...prev, data]);
+            if (error) {
+                console.error("Error sending message:", error);
+                alert(`Failed to send message: ${error.message || error.details}`);
+            } else if (data) {
+                setMessages(prev => [...prev, data]);
+            }
+        } catch (err) {
+            console.error("Exception sending message:", err);
+            alert(`Exception sending message: ${err.message}`);
         } finally { setChatSending(false); }
     };
+
+    // real-time chat
+    useEffect(() => {
+        if (activeTab !== 'chat' || !userRole?.personId || !person?.id) return;
+        const ch = supabase
+            .channel(`member-page-chat-${person.id}-${userRole.personId}`)
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'private_messages' }, ({ new: m }) => {
+                if (
+                    (m.sender_id === userRole.personId && m.recipient_id === person.id) ||
+                    (m.sender_id === person.id && m.recipient_id === userRole.personId)
+                ) setMessages(prev => prev.some(x => x.id === m.id) ? prev : [...prev, m]);
+            })
+            .subscribe();
+
+        // Fallback polling: fetch messages every 4 seconds in case Realtime fails
+        const interval = setInterval(() => {
+            fetchMessages();
+        }, 4000);
+
+        return () => {
+            supabase.removeChannel(ch);
+            clearInterval(interval);
+        };
+    }, [activeTab, person?.id, userRole?.personId, fetchMessages]);
+
+    // ── tab data loading ──────────────────────────────────────────────────────
+    useEffect(() => {
+        if (!person) return;
+        if (activeTab === 'analytics') fetchAttendance();
+        else if (activeTab === 'unit')  fetchUnitStats();
+        else if (activeTab === 'chat')  fetchMessages();
+    }, [activeTab, person?.id, fetchMessages, fetchAttendance, fetchUnitStats]);
 
     // ── derived ───────────────────────────────────────────────────────────────
     const presentCount  = attendance.filter(r => r.status === 'PRESENT').length;

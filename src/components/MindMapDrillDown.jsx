@@ -24,6 +24,8 @@ const MC_THEMES = [
     shepherdBg: "bg-violet-950/45 border-violet-500/25 text-violet-200",
     memberBg: "bg-violet-950/20 border-violet-500/15 text-slate-200",
     activeGlow: "shadow-[0_0_20px_rgba(139,92,246,0.15)] border-violet-500/30",
+    panelBgColor: "#110726",
+    panelBorderColor: "rgba(139, 92, 246, 0.25)",
   },
   {
     // 2 — Rose (Dunamis MC)
@@ -39,6 +41,8 @@ const MC_THEMES = [
     shepherdBg: "bg-rose-950/45 border-rose-500/25 text-rose-200",
     memberBg: "bg-rose-950/20 border-rose-500/15 text-slate-200",
     activeGlow: "shadow-[0_0_20px_rgba(244,63,94,0.15)] border-rose-500/30",
+    panelBgColor: "#200512",
+    panelBorderColor: "rgba(244, 63, 94, 0.25)",
   },
   {
     // 3 — Black (Media SM)
@@ -54,6 +58,8 @@ const MC_THEMES = [
     shepherdBg: "bg-zinc-950/45 border-zinc-800/25 text-zinc-300",
     memberBg: "bg-zinc-950/20 border-zinc-800/10 text-zinc-400",
     activeGlow: "shadow-[0_0_20px_rgba(255,255,255,0.05)] border-zinc-700/30",
+    panelBgColor: "#0c0c0e",
+    panelBorderColor: "rgba(63, 63, 70, 0.25)",
   },
   {
     // 4 — Blue (New Testament MC)
@@ -69,6 +75,8 @@ const MC_THEMES = [
     shepherdBg: "bg-blue-950/45 border-blue-500/25 text-blue-200",
     memberBg: "bg-blue-950/20 border-blue-500/15 text-slate-200",
     activeGlow: "shadow-[0_0_20px_rgba(59,130,246,0.15)] border-blue-500/30",
+    panelBgColor: "#060e24",
+    panelBorderColor: "rgba(59, 130, 246, 0.25)",
   },
   {
     // 5 — Amber/Brown (Soul Winners' MC)
@@ -84,6 +92,8 @@ const MC_THEMES = [
     shepherdBg: "bg-amber-950/35 border-amber-900/20 text-amber-300",
     memberBg: "bg-amber-950/15 border-amber-900/15 text-slate-200",
     activeGlow: "shadow-[0_0_20px_rgba(245,158,11,0.12)] border-amber-600/30",
+    panelBgColor: "#1a0d05",
+    panelBorderColor: "rgba(245, 158, 11, 0.25)",
   },
   {
     // 6 — Emerald (Fallback)
@@ -99,6 +109,8 @@ const MC_THEMES = [
     shepherdBg: "bg-emerald-950/45 border-emerald-500/25 text-emerald-200",
     memberBg: "bg-emerald-950/20 border-emerald-500/15 text-slate-200",
     activeGlow: "shadow-[0_0_20px_rgba(16,185,129,0.15)] border-emerald-500/30",
+    panelBgColor: "#03170e",
+    panelBorderColor: "rgba(16, 185, 129, 0.25)",
   },
 ];
 
@@ -215,74 +227,60 @@ function getCellPeople(unit) {
 }
 
 // ==========================================
-// RECURSIVE LAYOUT COMPONENTS FOR FLOATING OVERLAYS
+// MC ITEM — clickable row inside a church/zone column
 // ==========================================
-
-function ColumnItem({ node, theme, level, selectedIds, onClickHandlers, refs }) {
-  const isSelected = selectedIds[level] === node.id;
-  const isCell = node.unit_type === "CELL";
-  
-  const leader = isCell ? getPrimaryCellShepherd(node) : node.leaders?.[0];
-  const subUnits = isCell ? 0 : (node.children?.length || 0);
-  const totalMem = isCell ? ((node.members?.length || 0) + (node.leaders?.length || 0)) : countDescendantMembers(node);
-
-  const cardActiveBg = theme.buscentaActiveBg;
-  const cardBg = theme.buscentaBg;
-
-  const handleCardClick = (e) => {
-    e.stopPropagation();
-    onClickHandlers[level](node.id);
-  };
-
-  const cardClass = isSelected
-    ? `${cardActiveBg} ${theme.activeGlow} scale-[1.01]`
-    : `${cardBg} border-white/5 hover:border-white/20 hover:bg-slate-800/40 hover:scale-[1.01]`;
-
+function MCItem({ mc, theme, isSelected, onSelect, selectedBuscentaId, onBuscentaSelect, drillPanelRef }) {
+  const leader = mc.leaders?.[0];
+  const buscentaCount = mc.children?.length || 0;
+  const memberCount = countDescendantMembers(mc);
   return (
-    <div className="relative w-full shrink-0">
+    <div className="relative w-full">
       <button
-        onClick={handleCardClick}
-        className={`w-full flex items-center gap-2.5 p-3 rounded-2xl text-left border transition-all duration-300 shadow-sm ${cardClass}`}
+        onClick={onSelect}
+        className={`w-full flex items-center gap-2.5 p-3 rounded-2xl text-left border transition-all duration-300 shadow-sm ${
+          isSelected
+            ? `${theme.buscentaActiveBg} ${theme.activeGlow} scale-[1.01]`
+            : `${theme.buscentaBg} border-white/5 hover:border-white/20 hover:bg-slate-800/40 hover:scale-[1.01]`
+        }`}
       >
         <Avatar person={leader} size="sm" accent="border-white/10" />
         <div className="min-w-0 flex-1">
           <h5 className="text-[10px] font-black text-white leading-tight uppercase tracking-tight truncate">
-            {isCell ? node.name : (leader?.name || "No Leader")}
+            {leader?.name || 'No Leader'}
           </h5>
           <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider mt-0.5 truncate">
-            {isCell ? (leader?.name || "No Shepherd Assigned") : node.name}
+            {mc.name}
           </p>
           <div className="flex items-center gap-3 mt-1">
-            {!isCell && (
+            {buscentaCount > 0 && (
               <span className="text-[8px] text-slate-400 flex items-center gap-1 font-bold">
-                <Home size={9} className="shrink-0" />
-                <span className="font-black text-white">{subUnits}</span>
+                <Home size={8} className="shrink-0" />
+                <span className="font-black text-white">{buscentaCount}</span>
               </span>
             )}
             <span className="text-[8px] text-slate-400 flex items-center gap-1 font-bold">
-              <Users size={9} className="shrink-0" />
-              <span className="font-black text-white">{totalMem}</span>
+              <Users size={8} className="shrink-0" />
+              <span className="font-black text-white">{memberCount}</span>
             </span>
           </div>
         </div>
         <ChevronRight
           size={10}
           className={`text-slate-600 transition-transform duration-300 shrink-0 ${
-            isSelected ? "rotate-90 text-church-blue-400" : ""
+            isSelected ? 'rotate-90 text-church-blue-400' : ''
           }`}
         />
       </button>
 
-      {/* Render expansion panel directly next to this item, absolute! */}
+      {/* Absolute Overlay DrillPanel: sits right next to the row, overlaying the next column */}
       <AnimatePresence>
         {isSelected && (
-          <ExpansionPanel
-            parentNode={node}
+          <DrillPanel
+            mc={mc}
+            selectedBuscentaId={selectedBuscentaId}
+            onBuscentaSelect={onBuscentaSelect}
+            scrollRef={drillPanelRef}
             theme={theme}
-            level={level + 1}
-            selectedIds={selectedIds}
-            onClickHandlers={onClickHandlers}
-            refs={refs}
           />
         )}
       </AnimatePresence>
@@ -290,134 +288,302 @@ function ColumnItem({ node, theme, level, selectedIds, onClickHandlers, refs }) 
   );
 }
 
-function ExpansionPanel({ parentNode, theme, level, selectedIds, onClickHandlers, refs }) {
-  const ref = refs[level];
-  const isCell = parentNode.unit_type === "CELL";
-  const label = parentNode.name;
-  const subtitle = isCell ? "People" : getChildLabel(parentNode.unit_type);
+// ==========================================
+// BUSCENTA ROW — accordion row inside DrillPanel, expands cells vertically
+// ==========================================
+function BuscentaRow({ buscenta, isSelected, onSelect, theme }) {
+  const isCell = buscenta.unit_type === 'CELL';
+  const leader = isCell
+    ? (buscenta.leaders?.find(l => l.role?.toLowerCase() === 'cell shepherd') || buscenta.leaders?.[0])
+    : buscenta.leaders?.[0];
+  const children = buscenta.children || [];
 
-  if (isCell) {
-    const people = getCellPeople(parentNode);
-    const shepherds = people.filter(p => p.isShepherd);
-    const members = people.filter(p => !p.isShepherd);
+  // Sort cells numerically by trailing number in name (e.g. "JB Cell 01" < "JB Cell 02")
+  const sortedChildren = [...children].sort((a, b) => {
+    const numA = parseInt(a.name?.match(/(\d+)\s*$/)?.[1] || '0', 10);
+    const numB = parseInt(b.name?.match(/(\d+)\s*$/)?.[1] || '0', 10);
+    return numA - numB;
+  });
 
-    return (
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0, x: -12 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -8 }}
-        transition={{ duration: 0.22, ease: "easeOut" }}
-        className={`absolute left-[228px] top-0 w-[220px] shrink-0 backdrop-blur-xl bg-slate-950/90 border border-white/10 rounded-3xl p-4 shadow-2xl flex flex-col gap-3 z-30 transition-all duration-300 ${theme.activeGlow}`}
+  const memberCount = isCell
+    ? ((buscenta.members?.length || 0) + (buscenta.leaders?.length || 0))
+    : countDescendantMembers(buscenta);
+
+  const activeBg = theme?.buscentaActiveBg || 'bg-indigo-950/70 border-indigo-500/40';
+  const inactiveBg = theme?.buscentaBg || 'bg-slate-900/60 border-white/[0.06]';
+  const accentColor = theme?.textColor || 'text-indigo-400';
+
+  return (
+    <div className="w-full">
+      <button
+        onClick={onSelect}
+        className={`w-full flex items-center gap-2.5 p-3 rounded-2xl text-left border transition-all duration-300 ${
+          isSelected
+            ? `${activeBg} ring-1 ring-white/10`
+            : `${inactiveBg} hover:border-white/20`
+        }`}
       >
-        {/* Caret pointing to parent card */}
-        <div className="absolute -left-2 top-6 w-4 h-4 bg-slate-950 border-l border-b border-white/10 rotate-45 z-10" />
-
-        {/* Header */}
-        <div className="relative z-20">
-          <span className={`text-[7.5px] font-black uppercase tracking-widest ${theme.textColor}`}>
-            {subtitle}
-          </span>
-          <h4 className="text-[11px] font-black text-white leading-tight uppercase tracking-tight truncate mt-0.5">
-            {label}
-          </h4>
+        <Avatar person={leader} size="sm" accent="border-white/10" />
+        <div className="min-w-0 flex-1">
+          {/* Shepherd / leader name FIRST — bold */}
+          <h5 className="text-[10px] font-black text-white leading-tight uppercase tracking-tight truncate">
+            {leader?.name || (isCell ? 'No Shepherd' : 'No Leader')}
+          </h5>
+          {/* Unit name SECOND — smaller lighter font */}
+          <p className={`text-[8px] ${accentColor} font-semibold uppercase tracking-wider mt-0.5 truncate opacity-70`}>
+            {buscenta.name}
+          </p>
+          <div className="flex items-center gap-3 mt-1">
+            {!isCell && (
+              <span className="text-[8px] text-slate-400 flex items-center gap-1 font-bold">
+                <Home size={8} className="shrink-0" />
+                <span className="font-black text-white">{children.length}</span>
+              </span>
+            )}
+            <span className="text-[8px] text-slate-400 flex items-center gap-1 font-bold">
+              <Users size={8} className="shrink-0" />
+              <span className="font-black text-white">{memberCount}</span>
+            </span>
+          </div>
         </div>
+        <ChevronRight
+          size={10}
+          className={`transition-transform duration-300 shrink-0 ${accentColor} ${
+            isSelected ? 'rotate-90' : 'opacity-40'
+          }`}
+        />
+      </button>
 
-        <div className="relative z-20 overflow-y-auto no-scrollbar space-y-3 pr-0.5 max-h-[340px]">
-          {people.length === 0 ? (
-            <p className="text-[9px] text-slate-500 italic py-4 text-center">No one in this cell yet</p>
-          ) : (
-            <>
-              {shepherds.length > 0 && (
-                <div>
-                  <p className={`text-[7px] font-black uppercase tracking-wider ${theme.textColor} mb-1.5`}>
-                    Shepherds
-                  </p>
-                  <div className="space-y-1.5">
+      {/* Vertical expansion — accordion */}
+      <AnimatePresence>
+        {isSelected && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="overflow-hidden"
+          >
+            <div className="ml-3 mt-1.5 pb-1 space-y-1.5">
+              {isCell ? (() => {
+                const people = getCellPeople(buscenta);
+                const shepherds = people.filter(p => p.isShepherd);
+                const members = people.filter(p => !p.isShepherd);
+                return (
+                  <>
                     {shepherds.map((p, i) => (
                       <div
                         key={`shep-${i}`}
-                        className={`flex items-center gap-2 border rounded-xl p-2 transition-all duration-200 hover:brightness-110 ${theme.shepherdBg}`}
+                        className={`flex items-center gap-2 p-2.5 rounded-xl border ${theme?.shepherdBg || 'bg-slate-900/80 border-white/[0.05]'}`}
                       >
-                        <Avatar person={p} size="sm" accent="border-white/10" />
-                        <span className="text-[10px] font-bold text-white truncate">{p.name}</span>
+                        <Avatar person={p} size="sm" accent="border-white/[0.08]" />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[9px] font-black text-white truncate">{p.name}</p>
+                          <p className={`text-[7.5px] ${accentColor} font-semibold uppercase tracking-wider mt-0.5 opacity-70`}>Shepherd</p>
+                        </div>
                       </div>
                     ))}
-                  </div>
-                </div>
-              )}
-
-              {members.length > 0 && (
-                <div>
-                  <p className="text-[7px] font-black uppercase tracking-wider text-slate-500 mb-1.5">
-                    Members
-                  </p>
-                  <div className="space-y-1.5">
                     {members.map((m, i) => (
                       <div
                         key={`mem-${i}`}
-                        className={`flex items-center gap-2 border rounded-xl p-2 transition-all duration-200 hover:brightness-110 ${theme.memberBg}`}
+                        className={`flex items-center gap-2 p-2.5 rounded-xl border ${theme?.memberBg || 'bg-slate-900/40 border-white/[0.03]'}`}
                       >
-                        <Avatar person={m} size="sm" accent="border-white/10" />
-                        <span className="text-[10px] font-bold text-slate-200 truncate">{m.name}</span>
+                        <Avatar person={m} size="sm" accent="border-white/[0.08]" />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[9px] font-bold text-slate-300 truncate">{m.name}</p>
+                          <p className="text-[7.5px] text-slate-500 font-semibold uppercase tracking-wider mt-0.5 opacity-70">Member</p>
+                        </div>
                       </div>
                     ))}
-                  </div>
-                </div>
+                  </>
+                );
+              })() : (
+                <>
+                  <p className="text-[7px] font-black uppercase tracking-widest text-slate-600 px-1 mb-1.5">
+                    Cells · {sortedChildren.length}
+                  </p>
+                  {sortedChildren.length === 0 ? (
+                    <p className="text-[9px] text-slate-600 italic text-center py-3">No cells yet</p>
+                  ) : (
+                    // Each cell is now an expandable CellRow accordion
+                    <CellRowList cells={sortedChildren} theme={theme} accentColor={accentColor} />
+                  )}
+                </>
               )}
-            </>
-          )}
-        </div>
-      </motion.div>
-    );
-  }
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
-  const children = parentNode.children || [];
+// ==========================================
+// CELL ROW — expandable cell card inside Buscenta accordion, shows shepherd + members
+// ==========================================
+function CellRow({ cell, theme, accentColor }) {
+  const [expanded, setExpanded] = useState(false);
+  const shepherd = getPrimaryCellShepherd(cell) || cell.leaders?.[0];
+  const people = getCellPeople(cell);
+  const shepherds = people.filter(p => p.isShepherd);
+  const members = people.filter(p => !p.isShepherd);
+  const total = (cell.leaders?.length || 0) + (cell.members?.length || 0);
+
   return (
+    <div className="w-full">
+      <button
+        onClick={() => setExpanded(v => !v)}
+        className={`w-full flex items-center gap-2 p-2.5 rounded-xl border transition-all duration-200 text-left ${
+          expanded
+            ? `${theme?.cellActiveBg || 'bg-slate-800/60 border-white/20 text-white'} ring-1 ring-white/10`
+            : `${theme?.cellBg || 'bg-slate-900/60 border-white/[0.05]'} hover:border-white/15`
+        }`}
+      >
+        <Avatar person={shepherd} size="sm" accent="border-white/[0.08]" />
+        <div className="min-w-0 flex-1">
+          {/* Shepherd name FIRST — bold */}
+          <p className="text-[9px] font-black text-white truncate">
+            {shepherd?.name || 'No Shepherd Assigned'}
+          </p>
+          {/* Cell unit name SECOND — smaller lighter font */}
+          <p className={`text-[7.5px] ${accentColor} font-semibold uppercase tracking-wider mt-0.5 truncate opacity-70`}>
+            {cell.name}
+          </p>
+          <p className="text-[7px] text-slate-500 font-medium mt-0.5">
+            <span className="text-slate-300 font-black">{total}</span> people
+          </p>
+        </div>
+        <ChevronRight
+          size={9}
+          className={`transition-transform duration-200 shrink-0 ${accentColor} opacity-60 ${
+            expanded ? 'rotate-90' : ''
+          }`}
+        />
+      </button>
+
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="overflow-hidden"
+          >
+            <div className="ml-3 mt-1 pb-1 space-y-1">
+              {shepherds.length === 0 && members.length === 0 ? (
+                <p className="text-[8px] text-slate-600 italic text-center py-2">No members yet</p>
+              ) : (
+                <>
+                  {shepherds.map((p, i) => (
+                    <div
+                      key={`cshep-${i}`}
+                      className={`flex items-center gap-2 p-2 rounded-lg border ${theme?.shepherdBg || 'bg-slate-900/80 border-white/[0.05]'}`}
+                    >
+                      <Avatar person={p} size="sm" accent="border-white/[0.08]" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[8.5px] font-black text-white truncate">{p.name}</p>
+                        <p className={`text-[7px] ${accentColor} font-semibold uppercase tracking-wider mt-0.5 opacity-70`}>Shepherd</p>
+                      </div>
+                    </div>
+                  ))}
+                  {members.map((m, i) => (
+                    <div
+                      key={`cmem-${i}`}
+                      className={`flex items-center gap-2 p-2 rounded-lg border ${theme?.memberBg || 'bg-slate-900/40 border-white/[0.03]'}`}
+                    >
+                      <Avatar person={m} size="sm" accent="border-white/[0.08]" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[8.5px] font-bold text-slate-300 truncate">{m.name}</p>
+                        <p className="text-[7px] text-slate-500 font-semibold uppercase tracking-wider mt-0.5 opacity-70">Member</p>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Renders a sorted list of expandable CellRow items
+function CellRowList({ cells, theme, accentColor }) {
+  return (
+    <div className="space-y-1.5">
+      {cells.map(cell => (
+        <CellRow key={cell.id} cell={cell} theme={theme} accentColor={accentColor} />
+      ))}
+    </div>
+  );
+}
+
+// ==========================================
+// DRILL PANEL — horizontal absolute overlay panel showing buscentas of selected MC
+// ==========================================
+function DrillPanel({ mc, selectedBuscentaId, onBuscentaSelect, scrollRef, theme }) {
+  const buscentas = mc.children || [];
+  const panelBgColor = theme?.panelBgColor || "#0b0f19";
+  const panelBorderColor = theme?.panelBorderColor || "rgba(255, 255, 255, 0.08)";
+
+  return (
+    // pointer-events-none on outer so the panel NEVER blocks clicks on sibling columns
     <motion.div
-      ref={ref}
+      ref={scrollRef}
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -8 }}
-      transition={{ duration: 0.22, ease: "easeOut" }}
-      className={`absolute left-[228px] top-0 w-[220px] shrink-0 backdrop-blur-xl bg-slate-950/90 border border-white/10 rounded-3xl p-4 shadow-2xl flex flex-col gap-3 z-30 transition-all duration-300 ${theme.activeGlow}`}
+      transition={{ duration: 0.22, ease: 'easeOut' }}
+      className="absolute left-[214px] top-0 w-[240px] shrink-0 flex flex-col border rounded-3xl shadow-2xl z-35 pointer-events-none"
+      style={{
+        backgroundColor: panelBgColor,
+        borderColor: panelBorderColor,
+        maxHeight: 445
+      }}
     >
       {/* Caret pointing to parent card */}
-      <div className="absolute -left-2 top-6 w-4 h-4 bg-slate-950 border-l border-b border-white/10 rotate-45 z-10" />
+      <div
+        className="absolute -left-[9px] top-5 w-4 h-4 border-l border-b rotate-45 z-10"
+        style={{
+          backgroundColor: panelBgColor,
+          borderColor: panelBorderColor
+        }}
+      />
 
-      {/* Header */}
-      <div className="relative z-20">
-        <span className={`text-[7.5px] font-black uppercase tracking-widest ${theme.textColor}`}>
-          {subtitle}
-        </span>
-        <h4 className="text-[11px] font-black text-white leading-tight uppercase tracking-tight truncate mt-0.5">
-          {label}
-        </h4>
-      </div>
+      {/* pointer-events-auto on inner content so panel rows remain fully clickable */}
+      <div className="flex flex-col flex-1 overflow-hidden rounded-3xl pointer-events-auto">
+        {/* Panel header */}
+        <div className="px-4 pt-4 pb-3 border-b border-white/[0.06] shrink-0">
+          <span className="text-[7.5px] font-black uppercase tracking-widest text-church-blue-400">Buscentas</span>
+          <h4 className="text-[12px] font-black text-white leading-tight uppercase tracking-tight truncate mt-0.5">
+            {mc.name}
+          </h4>
+          <p className="text-[8px] text-slate-500 font-bold mt-0.5">{buscentas.length} buscentas</p>
+        </div>
 
-      {/* Content list */}
-      <div className="relative z-20 overflow-y-auto no-scrollbar space-y-2 pr-0.5 max-h-[340px]">
-        {children.length === 0 ? (
-          <p className="text-[9px] text-slate-500 italic py-4 text-center">
-            No {getChildLabel(parentNode.unit_type).toLowerCase()} yet
-          </p>
-        ) : (
-          children.map((child) => (
-            <ColumnItem
-              key={child.id}
-              node={child}
-              theme={theme}
-              level={level}
-              selectedIds={selectedIds}
-              onClickHandlers={onClickHandlers}
-              refs={refs}
-            />
-          ))
-        )}
+        {/* Buscenta list */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-2 no-scrollbar">
+          {buscentas.length === 0 ? (
+            <p className="text-[9px] text-slate-600 italic text-center py-8">No buscentas yet</p>
+          ) : (
+            buscentas.map((busc) => (
+              <BuscentaRow
+                key={busc.id}
+                buscenta={busc}
+                theme={theme}
+                isSelected={selectedBuscentaId === busc.id}
+                onSelect={() => onBuscentaSelect(busc.id)}
+              />
+            ))
+          )}
+        </div>
       </div>
     </motion.div>
   );
 }
+
 
 // ==========================================
 // MAIN COMPONENT
@@ -430,14 +596,12 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
 
   const [activeZoneIndex, setActiveZoneIndex] = useState(0);
 
-  const [selectedL2Id, setSelectedL2Id] = useState(null);
-  const [selectedL3Id, setSelectedL3Id] = useState(null);
-  const [selectedL4Id, setSelectedL4Id] = useState(null);
-  const [selectedL5Id, setSelectedL5Id] = useState(null);
+  // selectedMCId: which MC row is selected (opens DrillPanel horizontally)
+  const [selectedMCId, setSelectedMCId] = useState(null);
+  // selectedBuscentaId: which Buscenta in the DrillPanel is selected (expands cells vertically)
+  const [selectedBuscentaId, setSelectedBuscentaId] = useState(null);
 
-  const l3Ref = useRef(null);
-  const l4Ref = useRef(null);
-  const l5Ref = useRef(null);
+  const drillPanelRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {
@@ -466,57 +630,56 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
 
   // Reset on zone change
   useEffect(() => {
-    setSelectedL2Id(null);
-    setSelectedL3Id(null);
-    setSelectedL4Id(null);
-    setSelectedL5Id(null);
+    setSelectedMCId(null);
+    setSelectedBuscentaId(null);
   }, [activeZoneIndex]);
 
-  // Auto-scroll newly opened panels into view inside the horizontal container
-  const scrollToRef = (ref) => {
-    if (ref.current && scrollContainerRef.current) {
+  // Auto-scroll DrillPanel into view
+  useEffect(() => {
+    if (selectedMCId && drillPanelRef.current) {
       setTimeout(() => {
-        ref.current.scrollIntoView({
+        drillPanelRef.current.scrollIntoView({
           behavior: "smooth",
           block: "nearest",
           inline: "center"
         });
       }, 250);
     }
-  };
+  }, [selectedMCId]);
 
-  useEffect(() => {
-    if (selectedL2Id) scrollToRef(l3Ref);
-  }, [selectedL2Id]);
+  // Find the selected MC node inside activeZone to render inside DrillPanel
+  const selectedMCNode = useMemo(() => {
+    if (!selectedMCId || !activeZone?.children) return null;
+    for (const col of activeZone.children) {
+      if (col.id === selectedMCId) return col;
+      const subFound = (col.children || []).find((c) => c.id === selectedMCId);
+      if (subFound) return subFound;
+    }
+    return null;
+  }, [selectedMCId, activeZone]);
 
-  useEffect(() => {
-    if (selectedL3Id) scrollToRef(l4Ref);
-  }, [selectedL3Id]);
+  // Recursive search helper — matches a node or any of its descendants
+  const filterNodeRecursive = useCallback((node, term) => {
+    const selfMatches =
+      node.name?.toLowerCase().includes(term) ||
+      node.leaders?.some((l) => l.name?.toLowerCase().includes(term)) ||
+      node.members?.some((m) => m.name?.toLowerCase().includes(term));
 
-  useEffect(() => {
-    if (selectedL4Id) scrollToRef(l5Ref);
-  }, [selectedL4Id]);
+    if (node.unit_type === 'CELL') {
+      return selfMatches ? node : null;
+    }
 
-  const handleL2Click = useCallback((id) => {
-    setSelectedL2Id(prev => prev === id ? null : id);
-    setSelectedL3Id(null);
-    setSelectedL4Id(null);
-    setSelectedL5Id(null);
-  }, []);
+    const filteredChildren = (node.children || [])
+      .map((child) => filterNodeRecursive(child, term))
+      .filter(Boolean);
 
-  const handleL3Click = useCallback((id) => {
-    setSelectedL3Id(prev => prev === id ? null : id);
-    setSelectedL4Id(null);
-    setSelectedL5Id(null);
-  }, []);
-
-  const handleL4Click = useCallback((id) => {
-    setSelectedL4Id(prev => prev === id ? null : id);
-    setSelectedL5Id(null);
-  }, []);
-
-  const handleL5Click = useCallback((id) => {
-    setSelectedL5Id(prev => prev === id ? null : id);
+    if (selfMatches || filteredChildren.length > 0) {
+      return {
+        ...node,
+        children: selfMatches ? node.children : filteredChildren,
+      };
+    }
+    return null;
   }, []);
 
   // Search filtering
@@ -525,55 +688,17 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
     if (!searchTerm.trim()) return activeZone.children;
     const term = searchTerm.toLowerCase();
     return activeZone.children
-      .map((mc) => {
-        const mcMatches =
-          mc.name?.toLowerCase().includes(term) ||
-          mc.leaders?.some((l) => l.name?.toLowerCase().includes(term));
-        const filteredBuscentas = (mc.children || [])
-          .map((busc) => {
-            const busMatches =
-              busc.name?.toLowerCase().includes(term) ||
-              busc.leaders?.some((l) => l.name?.toLowerCase().includes(term));
-            const filteredCells = (busc.children || []).filter(
-              (cell) =>
-                cell.name?.toLowerCase().includes(term) ||
-                cell.leaders?.some((l) =>
-                  l.name?.toLowerCase().includes(term)
-                ) ||
-                cell.members?.some((m) => m.name?.toLowerCase().includes(term))
-            );
-            if (busMatches || filteredCells.length > 0) {
-              return {
-                ...busc,
-                children: busMatches ? busc.children : filteredCells,
-              };
-            }
-            return null;
-          })
-          .filter(Boolean);
-        if (mcMatches || filteredBuscentas.length > 0) {
-          return {
-            ...mc,
-            children: mcMatches ? mc.children : filteredBuscentas,
-          };
-        }
-        return null;
-      })
+      .map((col) => filterNodeRecursive(col, term))
       .filter(Boolean);
-  }, [activeZone, searchTerm]);
+  }, [activeZone, searchTerm, filterNodeRecursive]);
 
-  // Derived selections
-  const selectedIds = useMemo(() => {
-    return { 2: selectedL2Id, 3: selectedL3Id, 4: selectedL4Id, 5: selectedL5Id };
-  }, [selectedL2Id, selectedL3Id, selectedL4Id, selectedL5Id]);
+  // Check if the selected MC belongs to the last column
+  const isLastColActive = useMemo(() => {
+    if (!selectedMCId || !filteredMCs.length) return false;
+    const lastCol = filteredMCs[filteredMCs.length - 1];
+    return lastCol.id === selectedMCId || (lastCol.children || []).some(c => c.id === selectedMCId);
+  }, [selectedMCId, filteredMCs]);
 
-  const onClickHandlers = useMemo(() => {
-    return { 2: handleL2Click, 3: handleL3Click, 4: handleL4Click, 5: handleL5Click };
-  }, [handleL2Click, handleL3Click, handleL4Click, handleL5Click]);
-
-  const refs = useMemo(() => {
-    return { 3: l3Ref, 4: l4Ref, 5: l5Ref };
-  }, []);
 
   if (loading) {
     return (
@@ -722,7 +847,7 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
           </div>
         )}
 
-        {/* ── Columns (L1 columns with L2 items pre-expanded, and inline L3-L5 absolute expansion overlay panels) ── */}
+        {/* ── Columns ── */}
         {filteredMCs.length > 0 && (
           <div
             ref={scrollContainerRef}
@@ -741,18 +866,14 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                   ? (mc.members?.length || 0) + (mc.leaders?.length || 0)
                   : (mc.children?.length || 0);
 
-                const isFirst = idx === 0;
-                const isLast = idx === filteredMCs.length - 1;
-                const roundedClass = isFirst && isLast 
-                  ? "rounded-3xl" 
-                  : isFirst 
-                  ? "rounded-l-3xl" 
-                  : isLast 
-                  ? "rounded-r-3xl" 
-                  : "";
+                const isSelectedCol = mc.id === selectedMCId || (mc.children || []).some(c => c.id === selectedMCId);
 
                 return (
-                  <div key={mc.id} className="flex items-start shrink-0">
+                  <div
+                    key={mc.id}
+                    className="flex items-start shrink-0"
+                    style={{ zIndex: isSelectedCol ? 40 : 0, position: 'relative' }}
+                  >
                     {/* Main Column */}
                     <div
                       className="flex flex-col items-center shrink-0"
@@ -761,12 +882,8 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                       {/* Connector lines */}
                       <div className="w-full flex flex-col items-center">
                         <div className="w-full h-0.5 relative">
-                          {idx > 0 && (
-                            <div className="absolute right-1/2 top-0 h-0.5 bg-slate-700/60" style={{ width: '50%' }} />
-                          )}
-                          {idx < filteredMCs.length - 1 && (
-                            <div className="absolute left-1/2 top-0 h-0.5 bg-slate-700/60" style={{ width: '50%' }} />
-                          )}
+                          {idx > 0 && <div className="absolute right-1/2 top-0 h-0.5 bg-slate-700/60" style={{ width: '50%' }} />}
+                          {idx < filteredMCs.length - 1 && <div className="absolute left-1/2 top-0 h-0.5 bg-slate-700/60" style={{ width: '50%' }} />}
                         </div>
                         <div className="w-0.5 h-5 bg-slate-700/60" />
                       </div>
@@ -778,23 +895,16 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                           <div className="w-full h-40 bg-slate-950 overflow-hidden relative">
                             {mcLeader?.photo ? (
                               <>
-                                <img
-                                  src={mcLeader.photo}
-                                  alt={mcLeader.name}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                  style={{ objectPosition: "center 20%" }}
-                                />
+                                <img src={mcLeader.photo} alt={mcLeader.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" style={{ objectPosition: "center 20%" }} />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 pointer-events-none" />
                               </>
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
-                                <span className="text-6xl font-black text-slate-700">
-                                  {mcLeader?.name?.charAt(0).toUpperCase() || "?"}
-                                </span>
+                                <span className="text-6xl font-black text-slate-700">{mcLeader?.name?.charAt(0).toUpperCase() || "?"}</span>
                               </div>
                             )}
                           </div>
-                          {/* Name plate: Deepest Color */}
+                          {/* Name plate */}
                           <div className={`px-3 py-2.5 ${theme.namePlateBg}`}>
                             <span className={`inline-block mb-1 px-1.5 py-0.5 text-[7px] font-black uppercase tracking-wider bg-white/5 border border-white/10 rounded ${theme.textColor}`}>
                               {mc.unit_type === 'CELL' ? 'CELL SHEPHERD' : (mcLeader?.role?.toUpperCase() || getRoleLabel(mc.unit_type))}
@@ -811,16 +921,15 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
 
                       {/* Column Lane Container */}
                       <div
-                        className={`w-full flex flex-col pb-6 min-h-[500px] relative ${roundedClass} border-r border-slate-800/40 last:border-r-0 z-0`}
+                        className={`w-full flex flex-col pb-6 min-h-[500px] relative border-r border-slate-800/40 last:border-r-0 z-0`}
                         style={{ marginTop: '-165px' }}
                       >
                         <div className="absolute inset-0 flex flex-col pointer-events-none -z-10">
                           <div className={`w-full h-[165px] ${theme.darkTint}`} />
                           <div className={`w-full flex-1 ${theme.lightTint}`} />
                         </div>
-
                         <div className="w-full shrink-0 pointer-events-none" style={{ height: 165 }} />
-
+                        
                         {/* Content Area */}
                         <div className="w-full flex flex-col px-2.5 gap-3 mt-1">
                           {mc.unit_type !== 'CELL' && (
@@ -842,64 +951,21 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                             </p>
                           )}
 
-                          {/* CELL-type MC: show directly */}
-                          {mc.unit_type === "CELL" && (() => {
-                            const people = getCellPeople(mc);
-                            const shepherds = people.filter(p => p.isShepherd);
-                            const members = people.filter(p => !p.isShepherd);
-                            return (
-                              <div className="space-y-3 px-1">
-                                {shepherds.length > 0 && (
-                                  <div>
-                                    <p className="text-[7px] font-black uppercase tracking-widest text-violet-400/70 mb-1.5 px-0.5">
-                                      Shepherds
-                                    </p>
-                                    <div className="grid grid-cols-1 gap-1.5">
-                                      {shepherds.map((p, i) => (
-                                        <div
-                                          key={i}
-                                          className={`flex items-center gap-2 border rounded-xl p-2 ${theme.shepherdBg}`}
-                                        >
-                                          <Avatar person={p} size="sm" accent="border-white/10" />
-                                          <span className="text-[10px] font-bold truncate">{p.name}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                                {members.length > 0 && (
-                                  <div>
-                                    <p className="text-[7px] font-black uppercase tracking-widest text-slate-500/70 mb-1.5 px-0.5">
-                                      Members
-                                    </p>
-                                    <div className="grid grid-cols-1 gap-1.5">
-                                      {members.map((p, i) => (
-                                        <div
-                                          key={i}
-                                          className={`flex items-center gap-2 border rounded-xl p-2 ${theme.memberBg}`}
-                                        >
-                                          <Avatar person={p} size="sm" accent="border-white/10" />
-                                          <span className="text-[10px] font-bold truncate">{p.name}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })()}
-
-                          {/* Non-CELL MC: render Level 2 nodes vertically inside the column */}
-                          {mc.unit_type !== "CELL" &&
-                            (mc.children || []).map((l2) => (
-                              <ColumnItem
-                                key={l2.id}
-                                node={l2}
+                          {/* MC rows inside the column */}
+                          {mc.unit_type !== 'CELL' &&
+                            (mc.children || []).map((subItem) => (
+                              <MCItem
+                                key={subItem.id}
+                                mc={subItem}
                                 theme={theme}
-                                level={2}
-                                selectedIds={selectedIds}
-                                onClickHandlers={onClickHandlers}
-                                refs={refs}
+                                isSelected={selectedMCId === subItem.id}
+                                onSelect={() => {
+                                  setSelectedMCId(prev => prev === subItem.id ? null : subItem.id);
+                                  setSelectedBuscentaId(null);
+                                }}
+                                selectedBuscentaId={selectedBuscentaId}
+                                onBuscentaSelect={(buscId) => setSelectedBuscentaId(prev => prev === buscId ? null : buscId)}
+                                drillPanelRef={drillPanelRef}
                               />
                             ))}
                         </div>
@@ -909,8 +975,8 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                 );
               })}
 
-              {/* Spacer at the end of the columns flex row to allow scrolling to the overlay panels */}
-              {selectedL2Id && <div className="w-[450px] shrink-0 pointer-events-none" />}
+              {/* Spacer to allow scrolling to absolute overlays on the rightmost column */}
+              {isLastColActive && <div className="w-[240px] shrink-0 pointer-events-none" />}
             </div>
           </div>
         )}
