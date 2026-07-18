@@ -556,7 +556,6 @@ function DrillPanel({ mc, selectedBuscentaId, onBuscentaSelect, scrollRef, theme
       <div className="flex flex-col flex-1 overflow-hidden rounded-3xl pointer-events-auto">
         {/* Panel header */}
         <div className="px-4 pt-4 pb-3 border-b border-white/[0.06] shrink-0">
-          <span className="text-[7.5px] font-black uppercase tracking-widest text-church-blue-400">Buscentas</span>
           <h4 className="text-[12px] font-black text-white leading-tight uppercase tracking-tight truncate mt-0.5">
             {mc.name}
           </h4>
