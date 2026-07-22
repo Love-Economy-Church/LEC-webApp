@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { getFriendlyMessage } from '../lib/errorUtils';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -9,8 +8,11 @@ import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
  * Handles two scenarios:
  *
  * 1. Normal Google Sign-In (/auth/callback)
- *    - Supabase resolves the session from the URL hash automatically
- *    - Once user is available, navigate home
+ *    - Supabase PKCE: URL contains ?code= which the client exchanges automatically
+ *    - We listen directly to onAuthStateChange here (NOT AuthContext) to avoid
+ *      the race condition where AuthContext's getSession() fires first and sets
+ *      loading=false before the code exchange completes.
+ *    - Once session is confirmed, navigate home.
  *
  * 2. Gmail Linking (/auth/callback?mode=link)
  *    - User came from EmailGatePage to prove they own a Gmail
@@ -18,25 +20,60 @@ import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
  *    - Sign out the transient Google session, redirect to /login with success message
  */
 export default function AuthCallbackPage() {
-  const { user, loading } = useAuth();
-  const navigate          = useNavigate();
-  const [searchParams]    = useSearchParams();
-  const isLinkMode        = searchParams.get('mode') === 'link';
+  const navigate       = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isLinkMode     = searchParams.get('mode') === 'link';
 
   const [status,  setStatus]  = useState('loading'); // 'loading' | 'success' | 'error'
   const [message, setMessage] = useState('');
+  const handled = useRef(false); // prevent double-handling
 
   // ── Normal sign-in (not link mode) ──────────────────────────────────────
   useEffect(() => {
-    if (isLinkMode) return; // handled separately below
+    if (isLinkMode) return;
+    if (handled.current) return;
 
-    if (!loading && user) {
-      const destination = sessionStorage.getItem('auth_redirect_to') || '/';
-      sessionStorage.removeItem('auth_redirect_to');
-      navigate(destination.startsWith('/') ? destination : '/', { replace: true });
-    }
-    if (!loading && !user) navigate('/login',      { replace: true });
-  }, [user, loading, isLinkMode, navigate]);
+    // Listen directly to Supabase for the PKCE code exchange.
+    // Supabase's client automatically exchanges ?code= from the URL
+    // and fires SIGNED_IN when done. We must NOT rely on AuthContext's
+    // getSession() here because it runs before the exchange completes.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (handled.current) return;
+
+      if (event === 'SIGNED_IN' && session?.user) {
+        handled.current = true;
+        subscription.unsubscribe();
+        navigate('/', { replace: true });
+      }
+
+      if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
+        // No session after initial check — wait a bit then give up
+        // (onAuthStateChange fires INITIAL_SESSION before the exchange on some browsers)
+      }
+    });
+
+    // Safety timeout: if after 10 seconds there is still no session, go to /login
+    const timeout = setTimeout(async () => {
+      if (handled.current) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        handled.current = true;
+        subscription.unsubscribe();
+        navigate('/', { replace: true });
+      } else {
+        handled.current = true;
+        subscription.unsubscribe();
+        sessionStorage.setItem('auth_error', 'Sign-in timed out. Please try again.');
+        navigate('/login', { replace: true });
+      }
+    }, 10000);
+
+    return () => {
+      clearTimeout(timeout);
+      subscription.unsubscribe();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLinkMode]);
 
   // ── Link-mode: extract Google email and save to profile ─────────────────
   useEffect(() => {
@@ -45,16 +82,11 @@ export default function AuthCallbackPage() {
     async function handleLinking() {
       try {
         // Wait until Supabase has resolved the Google OAuth session
-        // (onAuthStateChange fires and populates `user`)
-        // We poll briefly; normally resolves within 1-2 seconds.
-        let googleUser = user;
-        if (!googleUser) {
-          // Wait up to 8 seconds for the session to appear
-          for (let i = 0; i < 16; i++) {
-            await new Promise(r => setTimeout(r, 500));
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) { googleUser = session.user; break; }
-          }
+        let googleUser = null;
+        for (let i = 0; i < 20; i++) {
+          await new Promise(r => setTimeout(r, 500));
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) { googleUser = session.user; break; }
         }
 
         if (!googleUser) {
@@ -114,7 +146,6 @@ export default function AuthCallbackPage() {
 
   // ── UI ───────────────────────────────────────────────────────────────────
   if (!isLinkMode) {
-    // Normal callback — just show a spinner while we wait
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-slate-900">
         <Loader2 className="animate-spin text-church-blue-500" size={40} />

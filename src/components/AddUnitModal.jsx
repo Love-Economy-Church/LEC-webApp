@@ -14,13 +14,30 @@ export default function AddUnitModal({ isOpen, onClose, parentNode, onSubmit }) 
 
     // Determine target child type
     let childType = 'CELL';
-    let childLabel = 'CELL';
+    let childLabel = 'Cell';
+    let placeholder = 'e.g. AGB Cell 01, GB Cell 01...';
     
-    if (parentType === 'ROOT') { childType = 'BRANCH'; childLabel = 'BRANCH'; }
-    else if (parentType === 'BRANCH') { childType = 'CHURCH'; childLabel = 'CHURCH'; }
-    else if (parentType === 'CHURCH') { childType = 'MC'; childLabel = 'MINISTRY CENTER (MC)'; }
-    else if (parentType === 'MC') { childType = 'BUSCENTA'; childLabel = 'BUSCENTA'; }
-    else if (parentType === 'BUSCENTA') { childType = 'CELL'; childLabel = 'CELL'; }
+    if (parentType === 'ROOT') { 
+        childType = 'BRANCH'; 
+        childLabel = 'Branch'; 
+        placeholder = 'e.g. Alpha Branch, Covenant Branch...';
+    } else if (parentType === 'BRANCH') { 
+        childType = 'CHURCH'; 
+        childLabel = 'Church'; 
+        placeholder = 'e.g. ChurchOne, ChurchTwo...';
+    } else if (parentType === 'CHURCH') { 
+        childType = 'MC'; 
+        childLabel = 'Mega Center (MC)'; 
+        placeholder = 'e.g. New Testament MC, Agape MC...';
+    } else if (parentType === 'MC') { 
+        childType = 'BUSCENTA'; 
+        childLabel = 'Buscenta'; 
+        placeholder = 'e.g. Grace Buscenta, Abundant Grace Buscenta...';
+    } else if (parentType === 'BUSCENTA') { 
+        childType = 'CELL'; 
+        childLabel = 'Cell'; 
+        placeholder = 'e.g. AGB Cell 01, GB Cell 01...';
+    }
 
     const handleInternalSubmit = async (data) => {
         // Final security check before attempting creation
@@ -40,7 +57,7 @@ export default function AddUnitModal({ isOpen, onClose, parentNode, onSubmit }) 
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={`CREATE NEW ${childLabel}`}>
+        <Modal isOpen={isOpen} onClose={onClose} title={`Create New ${childLabel}`}>
             <form onSubmit={handleSubmit(handleInternalSubmit)} className="space-y-5">
                 {/* Context Tip */}
                 <div className="flex gap-3 p-4 rounded-xl bg-church-blue-500/10 border border-church-blue-500/20">
@@ -53,14 +70,14 @@ export default function AddUnitModal({ isOpen, onClose, parentNode, onSubmit }) 
 
                 <div className="space-y-2">
                     <label className="block text-xs font-black text-slate-500 uppercase tracking-widest ml-1">
-                        {childLabel} NAME
+                        {childLabel} Name
                     </label>
                     <div className="relative group">
                         <Layout className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-church-blue-400 transition-colors" size={18} />
                         <input
                             {...register('name', { required: 'Unit name is required' })}
                             className="w-full bg-slate-900 border border-slate-700/50 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-church-blue-500/50 focus:ring-2 focus:ring-church-blue-500/50 transition-all text-slate-200 font-medium placeholder:text-slate-600"
-                            placeholder={`e.g. ${childLabel} ALPHA...`}
+                            placeholder={placeholder}
                             autoFocus
                         />
                     </div>
@@ -79,7 +96,7 @@ export default function AddUnitModal({ isOpen, onClose, parentNode, onSubmit }) 
                         onClick={onClose}
                         className="flex-1 py-3 rounded-xl bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 transition-all font-bold border border-slate-700"
                     >
-                        CANCEL
+                        Cancel
                     </button>
                     <button
                         type="submit"
@@ -89,7 +106,7 @@ export default function AddUnitModal({ isOpen, onClose, parentNode, onSubmit }) 
                         {isSubmitting ? (
                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-b-transparent"></div>
                         ) : <Plus size={18} />}
-                        {isSubmitting ? 'CREATING...' : 'CREATE UNIT'}
+                        {isSubmitting ? 'Creating...' : 'Create Unit'}
                     </button>
                 </div>
             </form>

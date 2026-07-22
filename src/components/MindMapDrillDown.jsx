@@ -182,8 +182,22 @@ function getRoleLabel(unitType) {
   }
 }
 
-function getChildLabel(unitType) {
-  switch (unitType) {
+function getChildLabel(unit) {
+  let type = typeof unit === 'string' ? unit : unit?.unit_type;
+  let children = typeof unit === 'object' ? unit?.children : null;
+
+  if (children && children.length > 0) {
+    const childType = children[0].unit_type;
+    switch (childType) {
+      case "BRANCH":   return "BRANCHES";
+      case "CHURCH":   return "CHURCHES";
+      case "MC":       return "MCS";
+      case "BUSCENTA": return "BUSCENTAS";
+      case "CELL":     return "CELLS";
+    }
+  }
+
+  switch (type) {
     case "BRANCH":   return "CHURCHES";
     case "CHURCH":   return "MCS";
     case "MC":       return "BUSCENTAS";
@@ -191,6 +205,38 @@ function getChildLabel(unitType) {
     case "CELL":     return "MEMBERS";
     default:         return "UNITS";
   }
+}
+
+function getUnitChildPlural(unit, count) {
+  let childType = 'CELL';
+  if (unit?.children && unit.children.length > 0) {
+    childType = unit.children[0].unit_type;
+  } else {
+    switch (unit?.unit_type) {
+      case 'BRANCH':   childType = 'CHURCH'; break;
+      case 'CHURCH':   childType = 'MC'; break;
+      case 'MC':       childType = 'BUSCENTA'; break;
+      case 'BUSCENTA': childType = 'CELL'; break;
+      case 'CELL':     childType = 'MEMBER'; break;
+      default:         childType = 'CELL';
+    }
+  }
+
+  let singular = 'CELL';
+  let plural = 'CELLS';
+
+  switch (childType) {
+    case 'BRANCH':   singular = 'BRANCH';   plural = 'BRANCHES'; break;
+    case 'CHURCH':   singular = 'CHURCH';   plural = 'CHURCHES'; break;
+    case 'MC':       singular = 'MC';       plural = 'MCS'; break;
+    case 'BUSCENTA': singular = 'BUSCENTA'; plural = 'BUSCENTAS'; break;
+    case 'CELL':     singular = 'CELL';     plural = 'CELLS'; break;
+    case 'MEMBER':   singular = 'MEMBER';   plural = 'MEMBERS'; break;
+    default:         singular = 'UNIT';     plural = 'UNITS';
+  }
+
+  const label = count === 1 ? singular : plural;
+  return `${count} ${label}`;
 }
 
 function getPrimaryCellShepherd(unit) {
@@ -400,10 +446,10 @@ function BuscentaRow({ buscenta, isSelected, onSelect, theme }) {
               })() : (
                 <>
                   <p className="text-[7px] font-black uppercase tracking-widest text-slate-600 px-1 mb-1.5">
-                    {getChildLabel(buscenta.unit_type)} - {sortedChildren.length}
+                    Cells · {sortedChildren.length}
                   </p>
                   {sortedChildren.length === 0 ? (
-                    <p className="text-[9px] text-slate-600 italic text-center py-3">NO CELLS YET</p>
+                    <p className="text-[9px] text-slate-600 italic text-center py-3">No cells yet</p>
                   ) : (
                     // Each cell is now an expandable CellRow accordion
                     <CellRowList cells={sortedChildren} theme={theme} accentColor={accentColor} />
@@ -472,7 +518,7 @@ function CellRow({ cell, theme, accentColor }) {
           >
             <div className="ml-3 mt-1 pb-1 space-y-1">
               {shepherds.length === 0 && members.length === 0 ? (
-                <p className="text-[8px] text-slate-600 italic text-center py-2">NO MEMBERS YET</p>
+                <p className="text-[8px] text-slate-600 italic text-center py-2">No members yet</p>
               ) : (
                 <>
                   {shepherds.map((p, i) => (
@@ -524,7 +570,7 @@ function CellRowList({ cells, theme, accentColor }) {
 // DRILL PANEL — horizontal absolute overlay panel showing buscentas of selected MC
 // ==========================================
 function DrillPanel({ mc, selectedBuscentaId, onBuscentaSelect, scrollRef, theme }) {
-  const childrenList = mc.children || [];
+  const buscentas = mc.children || [];
   const panelBgColor = theme?.panelBgColor || "#0b0f19";
   const panelBorderColor = theme?.panelBorderColor || "rgba(255, 255, 255, 0.08)";
 
@@ -556,24 +602,28 @@ function DrillPanel({ mc, selectedBuscentaId, onBuscentaSelect, scrollRef, theme
       <div className="flex flex-col flex-1 overflow-hidden rounded-3xl pointer-events-auto">
         {/* Panel header */}
         <div className="px-4 pt-4 pb-3 border-b border-white/[0.06] shrink-0">
-          <h4 className="text-[12px] font-black text-white leading-tight uppercase tracking-tight truncate mt-0.5">
+          <h4 className="text-[12px] font-black text-white leading-tight uppercase tracking-tight truncate">
             {mc.name}
           </h4>
-          <p className="text-[8px] text-slate-500 font-bold mt-0.5">{getChildLabel(mc.unit_type)} - {childrenList.length}</p>
+          <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">
+            {getUnitChildPlural(mc, buscentas.length)}
+          </p>
         </div>
 
-        {/* List */}
+        {/* Buscenta / Cell list */}
         <div className="flex-1 overflow-y-auto p-3 space-y-2 no-scrollbar">
-          {childrenList.length === 0 ? (
-            <p className="text-[9px] text-slate-600 italic text-center py-8">NO {getChildLabel(mc.unit_type)} YET</p>
+          {buscentas.length === 0 ? (
+            <p className="text-[9px] text-slate-600 font-bold uppercase tracking-wider text-center py-8">
+              NO {getChildLabel(mc)} YET
+            </p>
           ) : (
-            childrenList.map((childNode) => (
+            buscentas.map((busc) => (
               <BuscentaRow
-                key={childNode.id}
-                buscenta={childNode}
+                key={busc.id}
+                buscenta={busc}
                 theme={theme}
-                isSelected={selectedBuscentaId === childNode.id}
-                onSelect={() => onBuscentaSelect(childNode.id)}
+                isSelected={selectedBuscentaId === busc.id}
+                onSelect={() => onBuscentaSelect(busc.id)}
               />
             ))
           )}
@@ -934,7 +984,7 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                           {mc.unit_type !== 'CELL' && (
                             <div className="flex items-center justify-between px-1 mb-0.5">
                               <span className="text-[8px] font-black uppercase tracking-widest text-slate-500">
-                                {getChildLabel(mc.unit_type)}
+                                {getChildLabel(mc)}
                               </span>
                               <span className="text-[8px] font-black text-slate-500 bg-white/5 border border-white/5 px-1.5 py-0.5 rounded-full">
                                 {childCount}
@@ -943,10 +993,10 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                           )}
 
                           {childCount === 0 && (
-                            <p className="text-[9px] text-slate-600 italic text-center py-4">
+                            <p className="text-[9px] text-slate-600 font-bold uppercase tracking-wider text-center py-4">
                               {mc.unit_type === 'CELL'
                                 ? 'NO SHEPHERDS OR MEMBERS IN THIS CELL YET'
-                                : `NO ${getChildLabel(mc.unit_type)} YET`}
+                                : `NO ${getChildLabel(mc)} YET`}
                             </p>
                           )}
 
@@ -967,58 +1017,6 @@ export default function MindMapDrillDown({ searchTerm = "" }) {
                                 drillPanelRef={drillPanelRef}
                               />
                             ))}
-
-                          {/* Cell members inside the column */}
-                          {mc.unit_type === 'CELL' && (() => {
-                            const cellPeople = getCellPeople(mc);
-                            const shepherds = cellPeople.filter(p => p.isShepherd);
-                            const members = cellPeople.filter(p => !p.isShepherd);
-                            return (
-                              <div className="space-y-3 mt-1">
-                                {shepherds.length > 0 && (
-                                  <div>
-                                    <p className="text-[8px] font-black uppercase tracking-widest text-violet-400/70 mb-1.5 px-1">
-                                      Shepherds
-                                    </p>
-                                    <div className="space-y-1.5">
-                                      {shepherds.map((p, i) => (
-                                        <div
-                                          key={`col-shep-${i}`}
-                                          className="flex items-center gap-3 bg-violet-950/10 border border-violet-500/20 rounded-2xl p-2.5"
-                                        >
-                                          <Avatar person={p} size="sm" accent="border-violet-500/30" />
-                                          <span className="text-[10px] text-violet-300 font-bold truncate">
-                                            {p.name}
-                                          </span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-
-                                {members.length > 0 && (
-                                  <div>
-                                    <p className="text-[8px] font-black uppercase tracking-widest text-slate-500/70 mb-1.5 px-1">
-                                      Members
-                                    </p>
-                                    <div className="space-y-1.5">
-                                      {members.map((m, i) => (
-                                        <div
-                                          key={`col-mem-${i}`}
-                                          className="flex items-center gap-3 bg-slate-900/50 rounded-2xl p-2.5 border border-white/5"
-                                        >
-                                          <Avatar person={m} size="sm" accent="border-white/10" />
-                                          <span className="text-[10px] text-slate-300 font-bold truncate">
-                                            {m.name}
-                                          </span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })()}
                         </div>
                       </div>
                     </div>

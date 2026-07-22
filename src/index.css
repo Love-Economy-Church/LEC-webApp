@@ -9,29 +9,58 @@
   }
 }
 
-/* Custom Scrollbar — invisible by default, subtle on hover */
-.custom-scrollbar {
+/* Global Thin Minimalistic Blue Scrollbar */
+* {
   scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
+  scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.6);
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 9999px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 99px;
+::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 9999px;
   transition: background 0.2s;
 }
 
+::-webkit-scrollbar-thumb:hover {
+  background: #60a5fa;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Custom Scrollbar utility class */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.6);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 9999px;
+}
+
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: #60a5fa;
 }
 
 /* Hide scrollbar for clean UI elements */

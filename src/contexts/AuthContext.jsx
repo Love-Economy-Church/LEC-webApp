@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { canManageUnit, getManagedUnitIds } from '../utils/permissionsUtils';
+import { cacheService } from '../services/cacheService';
 
 const AuthContext = createContext({});
 
@@ -24,14 +25,27 @@ export function AuthProvider({ children }) {
       }
     });
 
-    // 2. Listen for changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    // 2. Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+
       if (session?.user) {
-        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-          setLoading(true);
+        // If the user just signed in via Google OAuth, sync their auth_user_id first.
+        // This fixes stale auth_user_id on the people row (new Google session UUID ≠ old stored UUID).
+        const isGoogleSignIn =
+          event === 'SIGNED_IN' &&
+          session.user.app_metadata?.provider === 'google';
+
+        if (isGoogleSignIn) {
+          // Best-effort sync — don't block on errors
+          try {
+            await supabase.rpc('sync_google_auth_id');
+          } catch (e) {
+            console.warn('[AuthContext] sync_google_auth_id failed (non-fatal):', e);
+          }
         }
+
         fetchUserRole(session.user.id);
       } else {
         setUserRole(null);
@@ -72,16 +86,10 @@ export function AuthProvider({ children }) {
         });
       } else {
          // User logged in but no profile found in 'people' table logic
-         const isLinking = window.location.search.includes('mode=link');
-         if (!isLinking) {
-           console.warn("User logged in but no linked 'people' record found. Signing out.");
-           setUserRole(null);
-           sessionStorage.setItem('auth_error', "This account isn't linked to an LEC Alpha profile. Contact your admin.");
-           await supabase.auth.signOut();
-         } else {
-           console.info("User logged in with unlinked account during Gmail link flow. Not signing out.");
-           setUserRole(null);
-         }
+         console.warn("User logged in but no linked 'people' record found. Signing out.");
+         setUserRole(null);
+         sessionStorage.setItem('auth_error', "This account isn't linked to an LEC Alpha profile. Contact your admin.");
+         await supabase.auth.signOut();
       }
     } catch (err) {
       console.error("Unexpected error fetching role:", err);
@@ -118,7 +126,10 @@ export function AuthProvider({ children }) {
     user,
     userRole,
     loading,
-    signOut: () => supabase.auth.signOut(),
+    signOut: async () => {
+      cacheService.clear();
+      await supabase.auth.signOut();
+    },
     canManage,
     getManagedUnits,
     refreshUserRole,

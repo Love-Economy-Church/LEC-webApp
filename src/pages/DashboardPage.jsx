@@ -187,11 +187,11 @@ export default function DashboardPage() {
         const cellsCount = cells.length
         
         const unitBreakdown = [
-            { label: 'BRANCHES', value: branchesCount, colorClass: 'text-church-yellow-400' },
-            { label: 'CHURCHES', value: churchesCount, colorClass: 'text-church-purple-400' },
-            { label: 'MCS', value: mcsCount, colorClass: 'text-church-blue-400' },
-            { label: 'BUSCENTAS', value: buscentasCount, colorClass: 'text-church-magenta-400' },
-            { label: 'CELLS', value: cellsCount, colorClass: 'text-church-coral-400' }
+            { label: branchesCount === 1 ? 'Branch' : 'Branches', value: branchesCount, colorClass: 'text-church-yellow-400' },
+            { label: churchesCount === 1 ? 'Church' : 'Churches', value: churchesCount, colorClass: 'text-church-purple-400' },
+            { label: mcsCount === 1 ? 'MC' : 'MCs', value: mcsCount, colorClass: 'text-church-blue-400' },
+            { label: buscentasCount === 1 ? 'Buscenta' : 'Buscentas', value: buscentasCount, colorClass: 'text-church-magenta-400' },
+            { label: cellsCount === 1 ? 'Cell' : 'Cells', value: cellsCount, colorClass: 'text-church-coral-400' }
         ];
 
         const assignedUnitIds = new Set(assignments?.map(a => a.unit_id) || [])
