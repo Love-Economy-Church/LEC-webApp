@@ -13,6 +13,7 @@ export async function fetchPeople() {
             id,
             full_name,
             photo_url,
+            personal_email,
             is_active,
             is_placeholder,
             created_at,
@@ -81,6 +82,7 @@ export async function fetchPeople() {
                 id: person.id,
                 name: person.full_name,
                 photo: person.photo_url,
+                personal_email: person.personal_email || null,
                 role: primaryAssignment?.position?.title || 'Unassigned',
                 unit: primaryAssignment?.unit?.name || 'Unassigned',
                 unit_id: primaryAssignment?.unit_id,
@@ -307,12 +309,17 @@ export const createPerson = async (personData) => {
 };
 export const updatePerson = async (id, updates) => {
     // 1. Update Core Bio
+    const updatePayload = {
+        full_name: updates.fullName,
+        is_active: updates.is_active
+    };
+    // Only update personal_email if provided (avoid overwriting with undefined)
+    if (updates.personalEmail !== undefined) {
+        updatePayload.personal_email = updates.personalEmail || null;
+    }
     const { data: person, error: personError } = await supabase
         .from('people')
-        .update({
-            full_name: updates.fullName,
-            is_active: updates.is_active
-        })
+        .update(updatePayload)
         .eq('id', id)
         .select()
         .single();

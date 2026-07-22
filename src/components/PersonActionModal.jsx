@@ -36,12 +36,13 @@ export default function PersonActionModal({
         if (mode === 'edit' && person) {
             reset({
                 fullName: person.name,
+                personalEmail: person.personal_email || '',
                 unitId: person.unit_id || '',
                 positionId: person.position_id || ''
             });
         } else {
             // In add mode, pre-fill unit_id if provided (e.g. when locked to a cell for first-timer registration)
-            reset({ fullName: '', unitId: person?.unit_id || '', positionId: '' });
+            reset({ fullName: '', personalEmail: '', unitId: person?.unit_id || '', positionId: '' });
         }
     }, [mode, person, reset, isOpen]);
 
